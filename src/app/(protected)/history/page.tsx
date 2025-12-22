@@ -1,6 +1,5 @@
 'use client';
 
-import { TopBar } from '@worldcoin/mini-apps-ui-kit-react';
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/components/StoreContext';
 
