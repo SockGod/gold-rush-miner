@@ -4,8 +4,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // 2. Dizer ao Next.js para gerar ficheiros HTML estáticos
-  output: 'export',
+  // 2. REMOVIDO: 'output: 'export'' (causava erro no Vercel com API routes)
   // 3. Configurar o redirecionamento de raiz
   async redirects() {
     return [
