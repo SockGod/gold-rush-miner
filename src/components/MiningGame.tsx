@@ -904,25 +904,6 @@ export function MiningGame() {
           >
             Verify World ID
           </button>
-          
-          <div className="w-full pt-6 border-t border-gray-600">
-            <p className="text-sm text-gray-400 mb-4 text-center">(Local testing mode)</p>
-            <button
-              onClick={() => {
-                setIsVerified(true);
-                setUsername('Miner');
-                localStorage.setItem('goldrush_daily_score', '600');
-                localStorage.setItem('goldrush_games_played', '3');
-                localStorage.setItem('goldrush_high_score_games', '2');
-                setDailyScore(600);
-                setGamesPlayedToday(3);
-                setGamesWithHighScore(2);
-              }}
-              className="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-medium"
-            >
-              🎮 TEST GAMEPLAY
-            </button>
-          </div>
         </div>
       ) : (
         <div className="flex flex-col items-center w-full max-w-md">

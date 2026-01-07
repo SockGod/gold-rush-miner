@@ -1,5 +1,3 @@
-import { auth } from '@/auth';
-import ClientProviders from '@/providers';
 import { StoreProvider } from '@/components/StoreContext';
 import '@worldcoin/mini-apps-ui-kit-react/styles.css';
 import type { Metadata } from 'next';
@@ -24,20 +22,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ClientProviders session={session}>
-          <StoreProvider>
-            {children}
-          </StoreProvider>
-        </ClientProviders>
+        {/* Removido ClientProviders */}
+        <StoreProvider>
+          {children}
+        </StoreProvider>
       </body>
     </html>
   );
