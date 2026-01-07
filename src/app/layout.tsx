@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SOCKGOD Gold Rush',
+  title: 'SOCKGOD Gold Rush - READY FOR WLD', // MUDADO PARA FORÇAR DEPLOY
   description: 'Skill-based gold mining game on World App',
   icons: {
     icon: '/app-icon.png',
