@@ -1,11 +1,21 @@
 'use client';
 
+// ADICIONA ESTA LINHA NO TOPO
+export const dynamic = 'force-dynamic';
+
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/components/StoreContext';
+import { useEffect, useState } from 'react'; // ADICIONADO
 
 export default function ProfilePage() {
   const router = useRouter();
   const store = useStore();
+  const [progressData, setProgressData] = useState({ // ADICIONADO: useState
+    dailyScore: 0,
+    highScoreGames: 0,
+    level1Target: 500,
+    level2Target: 5,
+  });
 
   // Get REAL inventory data
   const getRealInventoryData = () => {
@@ -20,21 +30,23 @@ export default function ProfilePage() {
 
   const inventoryData = getRealInventoryData();
 
-  // Get REAL progress data (from localStorage)
-  const getRealProgressData = () => {
-    const today = new Date().toDateString();
-    const savedDailyScore = localStorage.getItem('goldrush_daily_score');
-    const savedHighScoreGames = localStorage.getItem('goldrush_high_score_games');
-    
-    return {
-      dailyScore: savedDailyScore ? parseInt(savedDailyScore) : 0,
-      highScoreGames: savedHighScoreGames ? parseInt(savedHighScoreGames) : 0,
-      level1Target: 500,
-      level2Target: 5,
+  // ADICIONADO: useEffect para ler localStorage APENAS no cliente
+  useEffect(() => {
+    const getRealProgressData = () => {
+      const today = new Date().toDateString();
+      const savedDailyScore = localStorage.getItem('goldrush_daily_score');
+      const savedHighScoreGames = localStorage.getItem('goldrush_high_score_games');
+      
+      return {
+        dailyScore: savedDailyScore ? parseInt(savedDailyScore) : 0,
+        highScoreGames: savedHighScoreGames ? parseInt(savedHighScoreGames) : 0,
+        level1Target: 500,
+        level2Target: 5,
+      };
     };
-  };
-
-  const progressData = getRealProgressData();
+    
+    setProgressData(getRealProgressData());
+  }, []);
 
   // Get user data for referral (example data)
   const userData = {
