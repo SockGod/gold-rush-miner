@@ -879,9 +879,13 @@ export function MiningGame() {
 
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
-      <h1 className="text-3xl font-bold text-center pt-6 pb-8">
-        ⛏️ GOLD RUSH
-      </h1>
+      {/* TÍTULO MELHOR ALINHADO */}
+      <div className="text-center pt-6 pb-8">
+        <div className="flex items-center justify-center gap-2">
+          <span className="text-3xl">⛏️</span>
+          <h1 className="text-3xl font-bold">GOLD RUSH</h1>
+        </div>
+      </div>
 
       {/* Only sound toggle button (no music button) */}
       <div className="flex justify-center mb-4">
