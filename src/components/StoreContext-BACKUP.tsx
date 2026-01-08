@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { MiniKit, Tokens, tokenToDecimals } from '@worldcoin/minikit-js';
 
 export type StoreItem = {
   id: string;
@@ -363,79 +362,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setActivePowerUps(prev => prev.filter(p => p.type !== 'precision'));
   };
 
-  // ============================================================================
-  // 🎯 MODIFIED FUNCTION: purchaseItem WITH REAL WLD PAYMENTS
-  // ============================================================================
   const purchaseItem = async (itemId: string): Promise<boolean> => {
     const item = STORE_ITEMS.find(i => i.id === itemId);
     if (!item) return false;
 
-    // Check if running in World App
-    if (!MiniKit.isInstalled()) {
-      console.error('❌ MiniKit not installed. Please open in World App.');
-      alert('Please open in World App to make purchases!');
-      return false;
-    }
-
     try {
-      console.log(`🛒 Starting WLD payment: ${item.name} for ${item.price} WLD`);
-
-      // 1. Generate payment reference (initiate payment)
-      const initRes = await fetch('/api/initiate-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
+      console.log(`🛒 Purchase attempt: ${item.name} for ${item.price} WLD`);
       
-      if (!initRes.ok) {
-        console.error('❌ Failed to initiate payment');
-        return false;
-      }
+      // PAYMENT SIMULATION (local)
+      // In production: MiniKit.commandsAsync.pay()
       
-      const { id: reference } = await initRes.json();
-      console.log(`📝 Payment reference: ${reference}`);
-
-      // 2. Prepare payment payload for MiniKit
-      const paymentPayload = {
-        reference,
-        to: process.env.NEXT_PUBLIC_WLD_WALLET_ADDRESS || '0x7dba00d3544b999834b2fb12b46528cad6459d36',
-        tokens: [{
-          symbol: Tokens.WLD,
-          token_amount: tokenToDecimals(item.price, Tokens.WLD).toString()
-        }],
-        description: `Gold Rush: ${item.name}`
-      };
-
-      console.log('💰 Sending payment to MiniKit...');
-      
-      // 3. Execute payment via MiniKit
-      const { finalPayload } = await MiniKit.commandsAsync.pay(paymentPayload);
-      
-      if (finalPayload.status !== 'success') {
-        console.error('❌ Payment failed or was cancelled');
-        return false;
-      }
-
-      console.log(`✅ Payment sent! Transaction ID: ${finalPayload.transaction_id}`);
-      
-      // 4. Verify payment in backend
-      const verifyRes = await fetch('/api/confirm-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          payload: finalPayload 
-        })
-      });
-      
-      const verification = await verifyRes.json();
-      
-      if (!verification.success) {
-        console.error('❌ Payment verification failed');
-        return false;
-      }
-
-      console.log('✅ Payment verified successfully!');
-      
-      // 5. Add items to inventory (ONLY AFTER SUCCESSFUL PAYMENT)
+      // Add to inventory
       if (item.type === 'pack' && item.effects) {
         console.log('📦 Unpacking chest:', item.effects);
         
@@ -457,18 +394,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         addToInventory(itemId, 1);
       }
 
-      console.log(`🎉 Purchase completed: ${item.name}`);
+      console.log(`✅ Purchase successful: ${item.name}`);
       return true;
-      
-    } catch (error: any) {
-      console.error('💥 Purchase error:', error);
-      alert(error.message || 'Payment failed. Please try again.');
+    } catch (error) {
+      console.error('❌ Purchase failed:', error);
       return false;
     }
   };
-  // ============================================================================
-  // END OF MODIFIED FUNCTION
-  // ============================================================================
 
   const value: StoreContextType = {
     inventory,
