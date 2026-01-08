@@ -187,7 +187,7 @@ export default function HistoryPage() {
             {/* NOTE */}
             <div className="p-4 bg-gray-800/40 rounded-xl border border-gray-700 text-center">
               <p className="text-gray-400 text-sm">
-                🚧 Full game history integration coming soon with backend sync
+                Your game history is stored locally in your browser
               </p>
             </div>
           </div>
