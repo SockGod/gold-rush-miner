@@ -1,15 +1,28 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🔥 CORREÇÃO PARA SCROLL E BARRA FIXA */
+html, body {
+  width: 100%;
+  overscroll-behavior: none; /* Impede o 'bounce' que empurra a página */
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Usa altura dinâmica para mobile */
+@supports (height: 100dvh) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+  .h-screen {
+    height: 100dvh;
+  }
+}
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +35,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
