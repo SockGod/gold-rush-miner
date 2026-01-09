@@ -114,6 +114,31 @@ export function MiningGame() {
     setIsMuted(!isMuted);
   };
 
+  // ✅ VERIFICAR SE ESTAMOS NA WORLD APP
+  useEffect(() => {
+    const checkIfInWorldApp = () => {
+      const isInWorldApp = window.self !== window.top || 
+                          navigator.userAgent.includes('WorldApp');
+      
+      console.log('🌍 Environment check:', {
+        isInWorldApp,
+        userAgent: navigator.userAgent,
+        windowSelf: window.self,
+        windowTop: window.top
+      });
+      
+      return isInWorldApp;
+    };
+    
+    if (checkIfInWorldApp()) {
+      console.log('🚀 Running inside World App');
+      // MiniKit já deve estar disponível
+      console.log('MiniKit available:', typeof MiniKit !== 'undefined');
+    } else {
+      console.log('🌐 Running in regular browser');
+    }
+  }, []);
+
   // Load ALL images
   useEffect(() => {
     const loadImages = () => {
@@ -370,8 +395,8 @@ export function MiningGame() {
     
     try {
       const { finalPayload } = await MiniKit.commandsAsync.verify({
-        action: 'play-gold-rush',
-        signal: username,
+        action: 'gold-rush-miner-claim',
+        signal: username || 'claim',
       });
       
       if (finalPayload.status === 'success') {
@@ -455,36 +480,69 @@ export function MiningGame() {
     return () => clearInterval(animationInterval);
   }, [explosions.length, isPlaying]);
 
-  // ✅ VERIFY WORLD ID - FUNCIONA NA WLD
+  // ✅ VERIFY WORLD ID - CÓDIGO CORRETO DA WLD
   const handleVerify = async () => {
+    console.log('🔐 Starting World ID verification...');
+    
     try {
-      const { finalPayload } = await MiniKit.commandsAsync.verify({
-        action: 'play-gold-rush',
-        signal: '',
+      console.log('1. Calling MiniKit.commandsAsync.verify...');
+      
+      // ✅ ACTION deve ser único para a tua app
+      const verifyResult = await MiniKit.commandsAsync.verify({
+        action: 'gold-rush-miner-game',
+        signal: 'play-mining-game',
       });
 
-      if (finalPayload.status === 'success') {
+      console.log('2. Verify result:', verifyResult);
+      
+      if (verifyResult.finalPayload.status === 'success') {
+        console.log('✅ World ID verification SUCCESS!');
         setIsVerified(true);
         
         try {
+          console.log('3. Getting user info via walletAuth...');
+          // ✅ walletAuth para pegar username
           const walletAuth = await MiniKit.commandsAsync.walletAuth({
             nonce: Date.now().toString(),
             expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            notBefore: new Date(Date.now()),
+            notBefore: new Date(),
           });
 
+          console.log('4. Wallet auth result:', walletAuth);
+          
           if (walletAuth.finalPayload) {
             const user = walletAuth.finalPayload as any;
-            setUsername(user?.username || 'Player');
+            setUsername(user?.username || 'Gold Miner');
+            console.log('👤 Username set to:', user?.username || 'Gold Miner');
           }
         } catch (walletError) {
-          setUsername('Player');
+          console.warn('Wallet auth optional, continuing...', walletError);
+          setUsername('Gold Miner');
         }
+        
+      } else {
+        console.error('❌ Verify returned non-success status:', verifyResult.finalPayload);
+        alert('Verification failed: ' + verifyResult.finalPayload.status);
       }
-    } catch (error) {
-      console.error('Verify error:', error);
-      // ✅ NA WLD, SE FALHAR, MOSTRA ERRO CLARO
-      alert('Verification failed. Please ensure you are in the World App and try again.');
+      
+    } catch (error: any) {
+      console.error('💥 VERIFY ERROR DETAILS:', {
+        error,
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+      
+      // ✅ Mensagens de erro específicas
+      if (error.message?.includes('User rejected')) {
+        alert('You cancelled the verification. Please try again.');
+      } else if (error.message?.includes('Failed to fetch')) {
+        alert('Network error. Please check your internet connection.');
+      } else if (error.message?.includes('Not in World App')) {
+        alert('Please open this app within the World App to verify.');
+      } else {
+        alert('Verification failed. Error: ' + (error.message || 'Unknown'));
+      }
     }
   };
 
@@ -863,6 +921,9 @@ export function MiningGame() {
           >
             Verify World ID
           </button>
+          <p className="text-sm text-gray-400 text-center">
+            This requires the World App. If in browser, scan QR code from World App.
+          </p>
         </div>
       ) : (
         <div className="flex flex-col items-center w-full max-w-md">
