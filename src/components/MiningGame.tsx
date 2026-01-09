@@ -4,6 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import { MiniKit } from '@worldcoin/minikit-js';
 import { useStore } from '@/components/StoreContext';
 
+// ✅ ADICIONAR: Definir que MiniKit pode existir no window global
+declare global {
+  interface Window {
+    MiniKit: typeof MiniKit;
+  }
+}
+
 type GameImages = {
   background: HTMLImageElement | null;
   goldCoin: HTMLImageElement | null;
@@ -463,66 +470,74 @@ export function MiningGame() {
     return () => clearInterval(animationInterval);
   }, [explosions.length, isPlaying]);
 
-  // ✅ VERIFY WORLD ID - FUNÇÃO ORIGINAL QUE FUNCIONAVA
+    // ✅ VERIFY WORLD ID - VERSÃO CORRIGIDA E TESTADA
   const handleVerify = async () => {
     console.log('🔄 handleVerify called');
     
     try {
-      // Verifica se MiniKit está disponível
-      if (typeof MiniKit === 'undefined') {
-        console.error('❌ MiniKit is not defined');
-        alert('Please open this app within the World App to verify.');
+      // ✅ MELHOR DETECÇÃO: Primeiro tenta a biblioteca importada, depois window.MiniKit
+      const miniKitInstance = (typeof MiniKit !== 'undefined') ? MiniKit : window.MiniKit;
+      
+      // Verifica se MiniKit está disponível de alguma forma
+      if (!miniKitInstance) {
+        console.error('❌ MiniKit is not defined anywhere');
+        
+        // ✅ FORA DA WLD: Mensagem clara para abrir na World App
+        // ✅ DENTRO DA WLD: Se chegou aqui, MiniKit deveria estar disponível
+        const isInWorldApp = window.self !== window.top;
+        if (isInWorldApp) {
+          alert('MiniKit not available in this World App version. Please update your app.');
+        } else {
+          alert('Please open this app within the World App to verify your World ID!');
+        }
         return;
       }
       
-      console.log('MiniKit available, calling verify...');
+      // ✅ VERIFICA se o comando verify está disponível
+      if (!miniKitInstance.commandsAsync?.verify) {
+        console.error('❌ Verify command not available');
+        alert('World ID verification is not available. Please update your World App.');
+        return;
+      }
       
-      const verifyResult = await MiniKit.commandsAsync.verify({
-        action: 'gold-rush-miner',
-        signal: 'play',
+      console.log('✅ MiniKit available, calling verify...');
+      
+      const verifyResult = await miniKitInstance.commandsAsync.verify({
+        action: 'gold-rush-miner-verify', // Ação específica para o teu jogo
+        signal: 'user-play-intent', // Um identificador único
       });
 
-      console.log('Verify result:', verifyResult);
+      console.log('✅ Verify result:', verifyResult);
       
+      // ✅ CORREÇÃO: Usar finalPayload.status em vez de verifyResult.status
       if (verifyResult.finalPayload?.status === 'success') {
         console.log('✅ Verification successful!');
         setIsVerified(true);
         setUsername('Gold Miner');
         
-                // Opcional: pegar username do walletAuth
-        try {
-          const walletAuth = await MiniKit.commandsAsync.walletAuth({
-            nonce: Date.now().toString(),
-          });
-          
-          // ✅ CORREÇÃO: walletAuth não tem username, usamos valor padrão
-          setUsername('Gold Miner');
-          console.log('Wallet auth successful');
-        } catch (authError) {
-          console.log('Wallet auth optional, using default');
-          setUsername('Gold Miner');
-        }
+        console.log('🎉 Game unlocked!');
       } else {
-        console.error('Verify failed with status:', verifyResult.finalPayload?.status);
+        console.error('Verify failed with result:', verifyResult);
         alert('Verification failed. Please try again.');
       }
       
     } catch (error: any) {
-      console.error('🔥 Verify error:', error);
+      console.error('💥 Verify error:', error);
       
-      // ✅ MENSAGEM QUE FUNCIONAVA ANTES:
-      if (error.message?.includes('User rejected')) {
-        alert('Verification cancelled.');
-      } else if (error.message?.includes('verify')) {
-        // Esta é a mensagem que aparecia antes e funcionava!
-        alert('Please open in World App! This feature requires the World App.');
+      // ✅ MENSAGENS LIMPAS SEM POPUPS DUPLICADOS
+      if (error?.message?.includes('rejected') || error?.code === 'USER_REJECTED') {
+        alert('Verification was cancelled.');
+      } else if (error?.message?.includes('not available') || error?.message?.includes('verify')) {
+        // Se o verify não está disponível
+        alert('World ID verification is not available. Please ensure you are in the World App.');
       } else {
-        alert('Verification error: ' + (error.message || 'Unknown error'));
+        // Erro genérico - MOSTRA APENAS UM ALERTA
+        alert('Could not verify. Please try again.');
       }
     }
   };
 
-  // 🔥 POWER-UP FUNCTIONS (mantém igual)
+  // 🔥 POWER-UP FUNCTIONS
   const handleUseTNT = () => {
     if (!isPlaying || tntCount <= 0 || usingTNT) return;
     
