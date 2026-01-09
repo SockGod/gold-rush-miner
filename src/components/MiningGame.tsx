@@ -470,20 +470,22 @@ export function MiningGame() {
     return () => clearInterval(animationInterval);
   }, [explosions.length, isPlaying]);
 
-    // ✅ VERIFY WORLD ID - VERSÃO SIMPLES
+      // ✅ VERIFY COM ACTION CORRETA
   const handleVerify = async () => {
-    console.log('🔐 Tentando verificar...');
+    console.log('🔐 Verify com action configurada...');
     
     try {
       const result = await MiniKit.commandsAsync.verify({
-        action: 'gold-rush-miner',
-        signal: 'play',
+        action: 'play-gold-rush-miner',  // ← USA O IDENTIFIER DA ACTION
+        signal: 'start-game',
       });
+      
+      console.log('✅ Resultado:', result);
       
       if (result.finalPayload?.status === 'success') {
         setIsVerified(true);
         setUsername('Gold Miner');
-        console.log('✅ Verificado!');
+        console.log('🎉 VERIFICADO! Jogo desbloqueado.');
       }
     } catch (error) {
       console.log('❌ Erro:', error);
