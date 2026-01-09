@@ -27,25 +27,14 @@ export const Navigation = () => {
     else if (newValue === 'profile') router.push('/profile');
   };
 
+  // ⬇️ ⚠️ CÓDIGO ORIGINAL FUNCIONAL (SEM DIV EXTRA, SEM STYLE) ⬇️
   return (
-    // ⬇️ CONTAINER PRINCIPAL COM LARGURA TOTAL E ESTILO FLEX PARA OS ITENS ⬇️
-    <div className="w-full">
-      <Tabs 
-        value={value} 
-        onValueChange={handleTabChange}
-        // ⬇️ ESTILO DIRETO NO COMPONENTE TABS PARA DISTRIBUIR OS ITENS ⬇️
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between', // Distribui os itens igualmente
-        }}
-      >
-        <TabItem value="home" icon={<Home />} label="Home" />
-        <TabItem value="store" icon={<ShoppingBag />} label="Store" />
-        <TabItem value="history" icon={<span>📜</span>} label="History" />
-        <TabItem value="guide" icon={<span>📖</span>} label="Guide" />
-        <TabItem value="profile" icon={<User />} label="Profile" />
-      </Tabs>
-    </div>
+    <Tabs value={value} onValueChange={handleTabChange}>
+      <TabItem value="home" icon={<Home />} label="Home" />
+      <TabItem value="store" icon={<ShoppingBag />} label="Store" />
+      <TabItem value="history" icon={<span>📜</span>} label="History" />
+      <TabItem value="guide" icon={<span>📖</span>} label="Guide" />
+      <TabItem value="profile" icon={<User />} label="Profile" />
+    </Tabs>
   );
 };
