@@ -87,14 +87,14 @@ export default function GuidePage() {
               </div>
             </div>
 
-            {/* DAILY REWARDS INFO */}
+            {/* DAILY REWARDS INFO - ✅ CORRIGIDO */}
             <div className="p-6 bg-gradient-to-br from-gray-800/70 to-gray-900/70 rounded-2xl border border-yellow-800/30">
               <h2 className="text-xl font-bold mb-4 text-yellow-200">🎁 Daily Rewards System</h2>
               <div className="space-y-4">
                 <div className="p-4 bg-green-900/20 rounded-lg border border-green-700">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="font-bold">Level 1 Reward</h3>
-                    <span className="font-bold text-green-400">0.002 WLD</span>
+                    <span className="font-bold text-green-400">Daily Reward</span> {/* ✅ CORRIGIDO */}
                   </div>
                   <p className="text-gray-300 text-sm">Reach 500 points in one day</p>
                   <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
@@ -104,7 +104,7 @@ export default function GuidePage() {
                 <div className="p-4 bg-yellow-900/20 rounded-lg border border-yellow-700">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="font-bold">Level 2 Reward</h3>
-                    <span className="font-bold text-yellow-300">0.010 WLD</span>
+                    <span className="font-bold text-yellow-300">Bonus Reward</span> {/* ✅ CORRIGIDO */}
                   </div>
                   <p className="text-gray-300 text-sm">Complete 5 games with 1500+ points each</p>
                   <div className="w-full bg-gray-700 rounded-full h-2 mt-2">

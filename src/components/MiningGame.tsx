@@ -79,7 +79,7 @@ export function MiningGame() {
   const [isMuted, setIsMuted] = useState(false);
 
   // Login streak state
-  const [loginStreak, setLoginStreak] = useState(3); // Example: 3-day streak
+  const [loginStreak, setLoginStreak] = useState(3);
   const [lastLoginDate, setLastLoginDate] = useState<string | null>(null);
 
   // Game cooldown timer
@@ -94,10 +94,10 @@ export function MiningGame() {
   };
 
   // Calculate streak bonus
-  const streakBonus = Math.min(loginStreak, 5) * 10; // +10% per day, max +50%
+  const streakBonus = Math.min(loginStreak, 5) * 10;
   const scoreMultiplier = 1 + (streakBonus / 100);
 
-  // 🔈 SIMPLE AUDIO SYSTEM (NO BACKGROUND MUSIC)
+  // 🔈 SIMPLE AUDIO SYSTEM
   const playSound = (type: 'coin' | 'diamond' | 'rock' | 'tnt' | 'timer') => {
     if (isMuted) return;
     
@@ -214,25 +214,20 @@ export function MiningGame() {
     
     // Check login streak
     if (savedLastLogin === today) {
-      // Already logged in today
       if (savedLoginStreak) setLoginStreak(parseInt(savedLoginStreak));
     } else {
-      // New day - check if streak continues
       if (savedLastLogin) {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         if (savedLastLogin === yesterday.toDateString()) {
-          // Streak continues
           const newStreak = savedLoginStreak ? parseInt(savedLoginStreak) + 1 : 1;
           setLoginStreak(newStreak);
           localStorage.setItem('goldrush_login_streak', newStreak.toString());
         } else {
-          // Streak broken
           setLoginStreak(1);
           localStorage.setItem('goldrush_login_streak', '1');
         }
       } else {
-        // First login
         setLoginStreak(1);
         localStorage.setItem('goldrush_login_streak', '1');
       }
@@ -242,7 +237,6 @@ export function MiningGame() {
     
     // Check if new day for daily rewards
     if (savedLastClaim !== today) {
-      // NEW DAY: Reset everything
       localStorage.setItem('goldrush_daily_score', '0');
       localStorage.setItem('goldrush_games_played', '0');
       localStorage.setItem('goldrush_high_score_games', '0');
@@ -255,7 +249,6 @@ export function MiningGame() {
       setClaimedLevel1(false);
       setClaimedLevel2(false);
     } else {
-      // SAME DAY: Load values
       if (savedDailyScore) setDailyScore(parseInt(savedDailyScore));
       if (savedGamesPlayed) setGamesPlayedToday(parseInt(savedGamesPlayed));
       if (savedHighScoreGames) setGamesWithHighScore(parseInt(savedHighScoreGames));
@@ -263,7 +256,6 @@ export function MiningGame() {
       if (savedClaimedLevel2) setClaimedLevel2(savedClaimedLevel2 === 'true');
     }
     
-    // Load next game time
     if (savedNextGameTime) {
       const nextTime = parseInt(savedNextGameTime);
       const now = Date.now();
@@ -288,7 +280,6 @@ export function MiningGame() {
     setTimerBoostCount(store.getTimerBoostCount());
     setExtraPlaysCount(store.getExtraPlaysCount());
     
-    // Check if precision is active
     const isPrecisionActive = store.hasActivePrecision();
     setPrecisionActive(isPrecisionActive);
     
@@ -392,12 +383,12 @@ export function MiningGame() {
           localStorage.setItem('goldrush_claimed_level1', 'true');
           setClaimedLevel1(true);
           setCanClaimLevel1(false);
-          setClaimMessage('🎉 Daily Reward Unlocked! (Level 1)'); // ✅ CORRIGIDO
+          setClaimMessage('🎉 Daily Reward Unlocked! (Level 1)');
         } else {
           localStorage.setItem('goldrush_claimed_level2', 'true');
           setClaimedLevel2(true);
           setCanClaimLevel2(false);
-          setClaimMessage('🎉 Bonus Reward Unlocked! (Level 2)'); // ✅ CORRIGIDO
+          setClaimMessage('🎉 Bonus Reward Unlocked! (Level 2)');
         }
         
         setTimeout(() => {
@@ -412,12 +403,11 @@ export function MiningGame() {
     }
   };
 
-  // Update statistics when game ends (with streak bonus)
+  // Update statistics when game ends
   useEffect(() => {
     if (!isPlaying && timeLeft === 0 && score > 0) {
       const today = new Date().toDateString();
       
-      // Apply streak bonus to score
       const finalScore = Math.floor(score * scoreMultiplier);
       
       const newDailyScore = dailyScore + finalScore;
@@ -434,16 +424,14 @@ export function MiningGame() {
         localStorage.setItem('goldrush_high_score_games', newHighScoreGames.toString());
       }
       
-      // Set cooldown for next free game (1 hour)
       if (extraPlaysCount <= 0) {
-        const nextGame = Date.now() + 60 * 60 * 1000; // 1 hour
+        const nextGame = Date.now() + 60 * 60 * 1000;
         setNextGameTime(nextGame);
         localStorage.setItem('goldrush_next_game_time', nextGame.toString());
       }
       
       checkClaimConditions();
       
-      // Reset active power-ups
       setUsingTNT(false);
       setUsingTimerBoost(false);
     }
@@ -467,9 +455,8 @@ export function MiningGame() {
     return () => clearInterval(animationInterval);
   }, [explosions.length, isPlaying]);
 
-  // Verify World ID - ✅ CORRIGIDO (removida verificação MiniKit.isInstalled)
+  // ✅ VERIFY WORLD ID - FUNCIONA NA WLD
   const handleVerify = async () => {
-    // ✅ REMOVIDO O CHECK DO MiniKit.isInstalled() que causa erro na World App
     try {
       const { finalPayload } = await MiniKit.commandsAsync.verify({
         action: 'play-gold-rush',
@@ -479,25 +466,29 @@ export function MiningGame() {
       if (finalPayload.status === 'success') {
         setIsVerified(true);
         
-        const walletAuth = await MiniKit.commandsAsync.walletAuth({
-          nonce: Date.now().toString(),
-          expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          notBefore: new Date(Date.now()),
-        });
+        try {
+          const walletAuth = await MiniKit.commandsAsync.walletAuth({
+            nonce: Date.now().toString(),
+            expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            notBefore: new Date(Date.now()),
+          });
 
-        if (walletAuth.finalPayload) {
-          const user = walletAuth.finalPayload as any;
-          setUsername(user?.username || 'Player');
+          if (walletAuth.finalPayload) {
+            const user = walletAuth.finalPayload as any;
+            setUsername(user?.username || 'Player');
+          }
+        } catch (walletError) {
+          setUsername('Player');
         }
       }
     } catch (error) {
       console.error('Verify error:', error);
+      // ✅ NA WLD, SE FALHAR, MOSTRA ERRO CLARO
+      alert('Verification failed. Please ensure you are in the World App and try again.');
     }
   };
 
-  // 🔥 POWER-UP FUNCTIONS 🔥
-
-  // Use TNT
+  // 🔥 POWER-UP FUNCTIONS
   const handleUseTNT = () => {
     if (!isPlaying || tntCount <= 0 || usingTNT) return;
     
@@ -505,11 +496,8 @@ export function MiningGame() {
     if (success) {
       setUsingTNT(true);
       setTntCount(prev => prev - 1);
-      
-      // Remove ALL rocks
       setItems(prev => prev.filter(item => item.type !== 'rock'));
       
-      // Visual explosion effect
       const newExplosions: ExplosionAnimation[] = [];
       for (let i = 0; i < 5; i++) {
         newExplosions.push({
@@ -521,15 +509,11 @@ export function MiningGame() {
       }
       setExplosions(prev => [...prev, ...newExplosions]);
       
-      // Play sound
       playSound('tnt');
-      
-      // Reset after 1.5 seconds
       setTimeout(() => setUsingTNT(false), 1500);
     }
   };
 
-  // Use Timer Boost
   const handleUseTimerBoost = () => {
     if (!isPlaying || timerBoostCount <= 0 || usingTimerBoost) return;
     
@@ -537,30 +521,23 @@ export function MiningGame() {
     if (success) {
       setUsingTimerBoost(true);
       setTimerBoostCount(prev => prev - 1);
-      
-      // Add 30 seconds
       setTimeLeft(prev => prev + 30);
       
-      // Visual effect
       setExplosions(prev => [
         ...prev,
         {
-          x: 187.5, // canvas center
+          x: 187.5,
           y: 250,
           currentFrame: 0,
           maxFrames: 3
         }
       ]);
       
-      // Play sound
       playSound('timer');
-      
-      // Reset after 1 second
       setTimeout(() => setUsingTimerBoost(false), 1000);
     }
   };
 
-  // Activate Precision Pack
   const handleActivatePrecision = () => {
     if (!isPlaying || store.getPrecisionCount() <= 0 || precisionActive) return;
     
@@ -571,9 +548,7 @@ export function MiningGame() {
     }
   };
 
-  // Start game with power-ups
   const startGame = () => {
-    // Check if can play (has extra plays OR no cooldown)
     if (extraPlaysCount <= 0 && nextGameTime && nextGameTime > Date.now()) {
       alert(`Please wait ${cooldownTimer} for next free game or use Extra Plays!`);
       return;
@@ -589,13 +564,11 @@ export function MiningGame() {
     setExplosions([]);
     setShowPowerUpButtons(true);
     
-    // Use one extra play if available
     if (extraPlaysCount > 0) {
       store.useExtraPlay();
       setExtraPlaysCount(prev => prev - 1);
     }
     
-    // Activate Precision automatically if available
     if (store.getPrecisionCount() > 0) {
       setTimeout(() => {
         handleActivatePrecision();
@@ -727,7 +700,6 @@ export function MiningGame() {
       if (imgToDraw) {
         ctx.drawImage(imgToDraw, item.x, item.y, item.width, item.height);
       } else {
-        // Visual fallback
         if (item.type === 'diamond') {
           ctx.fillStyle = '#2eb9ff';
           ctx.beginPath();
@@ -742,7 +714,6 @@ export function MiningGame() {
       }
     });
     
-    // Explosion animations
     explosions.forEach((explosion) => {
       if (imagesRef.current.explosion[explosion.currentFrame]) {
         const explosionImg = imagesRef.current.explosion[explosion.currentFrame];
@@ -750,13 +721,10 @@ export function MiningGame() {
       }
     });
     
-    // Precision Active visual effect
     if (precisionActive && isPlaying) {
-      // Draw glow around clickable area
       ctx.fillStyle = 'rgba(147, 51, 234, 0.15)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Text indicating precision active
       ctx.fillStyle = 'white';
       ctx.font = 'bold 16px Arial';
       ctx.textAlign = 'center';
@@ -773,7 +741,7 @@ export function MiningGame() {
     }
   }, [isPlaying, items, imagesLoaded, explosions, precisionActive, precisionTimeLeft]);
 
-  // Handle click - WITH PRECISION BOOST AND SOUNDS
+  // Handle click
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isPlaying) return;
 
@@ -789,9 +757,7 @@ export function MiningGame() {
 
     setItems((prev) => {
       return prev.filter((item) => {
-        // LARGER HITBOX with Precision Pack active
         const hitboxMultiplier = precisionActive ? 1.5 : 1.0;
-        
         const baseHitbox = 10;
         const effectiveHitbox = baseHitbox * hitboxMultiplier;
         
@@ -802,7 +768,6 @@ export function MiningGame() {
           clickY <= item.y + item.height + effectiveHitbox;
 
         if (isHit) {
-          // IMMEDIATE VISUAL FEEDBACK
           const ctx = canvas.getContext('2d');
           if (ctx) {
             let color = item.type === 'gold' ? 'rgba(255, 215, 0, 0.6)' : 
@@ -814,7 +779,6 @@ export function MiningGame() {
             ctx.arc(item.x + item.width/2, item.y + item.height/2, 35, 0, Math.PI * 2);
             ctx.fill();
             
-            // Score text
             ctx.fillStyle = 'white';
             ctx.font = 'bold 26px Arial';
             ctx.textAlign = 'center';
@@ -822,7 +786,6 @@ export function MiningGame() {
             ctx.fillText(points, item.x + item.width/2, item.y + item.height/2 - 25);
           }
 
-          // PLAY SOUND
           if (item.type === 'gold') {
             playSound('coin');
           } else if (item.type === 'diamond') {
@@ -831,7 +794,6 @@ export function MiningGame() {
             playSound('rock');
           }
 
-          // ANIMATION
           if (item.type === 'gold' || item.type === 'diamond') {
             setExplosions(prevExplosions => [
               ...prevExplosions,
@@ -845,7 +807,6 @@ export function MiningGame() {
             
             setScore((s) => s + (item.type === 'diamond' ? 50 : 10));
           } else {
-            // ROCKS: penalty but WITH FEEDBACK
             setExplosions(prevExplosions => [
               ...prevExplosions,
               {
@@ -875,7 +836,6 @@ export function MiningGame() {
 
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
-      {/* TÍTULO MELHOR ALINHADO */}
       <div className="text-center pt-6 pb-8">
         <div className="flex items-center justify-center gap-2">
           <span className="text-3xl">⛏️</span>
@@ -883,7 +843,6 @@ export function MiningGame() {
         </div>
       </div>
 
-      {/* Only sound toggle button (no music button) */}
       <div className="flex justify-center mb-4">
         <button
           onClick={toggleMute}
@@ -907,14 +866,12 @@ export function MiningGame() {
         </div>
       ) : (
         <div className="flex flex-col items-center w-full max-w-md">
-          {/* Greeting */}
           <div className="w-full p-4 mb-6 bg-gray-800/30 rounded-xl text-center">
             <p className="text-lg">
               Hello, <span className="font-bold text-yellow-300">{username}</span>!
             </p>
             <p className="text-gray-300 mt-1">Find rare diamonds! 💎</p>
             
-            {/* Available Power-Ups Display */}
             {(tntCount > 0 || timerBoostCount > 0 || store.getPrecisionCount() > 0 || extraPlaysCount > 0) && (
               <div className="mt-3 flex justify-center space-x-4 flex-wrap">
                 {tntCount > 0 && (
@@ -946,7 +903,6 @@ export function MiningGame() {
           </div>
 
           {!isPlaying ? (
-            /* Start Screen */
             <div className="flex flex-col items-center w-full">
               <div className="w-full p-6 bg-gray-800/50 rounded-2xl border border-gray-700 mb-6">
                 <p className="text-4xl font-bold mb-2 text-yellow-300">{score}</p>
@@ -963,7 +919,6 @@ export function MiningGame() {
                   </div>
                 </div>
                 
-                {/* Game Availability Info */}
                 <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
                   {extraPlaysCount > 0 ? (
                     <div className="text-center">
@@ -1053,14 +1008,13 @@ export function MiningGame() {
                 </h3>
                 
                 <div className="space-y-6">
-                  {/* LEVEL 1 */}
                   <div className={`p-4 rounded-xl border ${canClaimLevel1 && !claimedLevel1 ? 'border-green-500 bg-green-900/20' : 'border-gray-600 bg-gray-800/30'}`}>
                     <div className="flex justify-between items-center mb-3">
                       <div>
                         <h4 className="font-bold">Level 1</h4>
                         <p className="text-sm text-gray-300">500 points today</p>
                       </div>
-                      <span className="font-bold text-green-400">0.002 WLD</span>
+                      <span className="font-bold text-green-400">Daily Reward</span>
                     </div>
                     
                     <div className="flex items-center justify-between mb-3">
@@ -1085,19 +1039,18 @@ export function MiningGame() {
                       }`}
                     >
                       {claimedLevel1 ? '✅ ALREADY CLAIMED' : 
-                       canClaimLevel1 ? '🎯 CLAIM REWARD' :  // ✅ CORRIGIDO
+                       canClaimLevel1 ? '🎯 CLAIM REWARD' : 
                        '⏳ IN PROGRESS'}
                     </button>
                   </div>
                   
-                  {/* LEVEL 2 */}
                   <div className={`p-4 rounded-xl border ${canClaimLevel2 && !claimedLevel2 ? 'border-yellow-500 bg-yellow-900/20' : 'border-gray-600 bg-gray-800/30'}`}>
                     <div className="flex justify-between items-center mb-3">
                       <div>
                         <h4 className="font-bold">Level 2</h4>
                         <p className="text-sm text-gray-300">5 games with 1500+ points each</p>
                       </div>
-                      <span className="font-bold text-yellow-300">0.010 WLD</span>
+                      <span className="font-bold text-yellow-300">Bonus Reward</span>
                     </div>
                     
                     <div className="flex items-center justify-between mb-3">
@@ -1122,12 +1075,11 @@ export function MiningGame() {
                       }`}
                     >
                       {claimedLevel2 ? '✅ ALREADY CLAIMED' : 
-                       canClaimLevel2 ? '🏆 CLAIM BONUS' :  // ✅ CORRIGIDO
+                       canClaimLevel2 ? '🏆 CLAIM BONUS' : 
                        '⏳ IN PROGRESS'}
                     </button>
                   </div>
                   
-                  {/* STATUS */}
                   <div className="pt-4 border-t border-gray-600">
                     <p className="text-center text-sm mb-2">
                       {claimMessage || 'Check your progress above'}
@@ -1145,9 +1097,7 @@ export function MiningGame() {
               </div>
             </div>
           ) : (
-            /* Active Game Screen WITH POWER-UPS */
             <>
-              {/* STATS BAR WITH POWER-UP BUTTONS */}
               <div className="flex justify-between w-full px-2 mb-4">
                 <div className="text-center p-3 bg-gray-800/50 rounded-lg">
                   <p className="text-sm text-gray-300">TIME</p>
@@ -1159,7 +1109,6 @@ export function MiningGame() {
                 </div>
               </div>
 
-              {/* STREAK BONUS INDICATOR DURING GAME */}
               {streakBonus > 0 && (
                 <div className="w-full px-6 mb-2">
                   <div className="p-2 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 rounded-lg text-center">
@@ -1170,7 +1119,6 @@ export function MiningGame() {
                 </div>
               )}
 
-              {/* POWER-UP BUTTONS DURING GAME */}
               {showPowerUpButtons && (tntCount > 0 || timerBoostCount > 0) && (
                 <div className="flex justify-center space-x-4 mb-4 w-full px-6">
                   {tntCount > 0 && (
@@ -1211,7 +1159,6 @@ export function MiningGame() {
                 </div>
               )}
 
-              {/* GAME CANVAS */}
               <div className="relative w-full">
                 <canvas
                   ref={canvasRef}
@@ -1226,7 +1173,6 @@ export function MiningGame() {
                   }}
                 />
                 
-                {/* PRECISION ACTIVE OVERLAY */}
                 {precisionActive && (
                   <div className="absolute top-0 left-0 right-0 p-2 bg-gradient-to-r from-purple-900/70 to-purple-700/70 rounded-t-2xl text-center">
                     <p className="text-white font-bold">
@@ -1243,7 +1189,6 @@ export function MiningGame() {
                 )}
               </div>
 
-              {/* LEGEND */}
               <div className="flex justify-between w-full mt-6 text-sm px-6">
                 <div className="flex flex-col items-center">
                   <img src="/game-assets/moeda01.png" className="w-8 h-8 mb-1" alt="Gold" />
@@ -1259,7 +1204,6 @@ export function MiningGame() {
                 </div>
               </div>
               
-              {/* POWER-UP INSTRUCTION */}
               {(tntCount > 0 || timerBoostCount > 0) && (
                 <div className="mt-4 text-center text-sm text-gray-300">
                   <p>Use buttons above to activate power-ups during the game!</p>

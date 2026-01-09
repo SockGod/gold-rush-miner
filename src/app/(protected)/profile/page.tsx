@@ -48,12 +48,12 @@ export default function ProfilePage() {
     setProgressData(getRealProgressData());
   }, []);
 
-  // Get user data for referral (example data)
+  // Get user data for referral (example data) - ✅ CORRIGIDO
   const userData = {
     username: 'Miner',
-    referralCode: `GOLDRUSH-${'Miner'.toUpperCase().slice(0, 6)}`,
+    referralCode: `GOLDRUSH-MINER`, // ✅ Simplificado
     friendsInvited: 3,
-    wldEarned: 0.03,
+    referralPoints: 9, // ✅ CORRIGIDO: friendsInvited * 3
   };
 
   return (
@@ -191,7 +191,7 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            {/* REFERRAL SYSTEM - ✅ CORRIGIDO */}
+            {/* REFERRAL SYSTEM - ✅ CORRIGIDO COMPLETAMENTE */}
             <div className="p-6 bg-gradient-to-br from-gray-800/70 to-gray-900/70 rounded-2xl border border-yellow-800/30">
               <h2 className="text-xl font-bold mb-4 text-yellow-200">🤝 Invite Friends</h2>
               
@@ -228,8 +228,9 @@ export default function ProfilePage() {
                     <p className="text-gray-400 text-sm">Friends Invited</p>
                   </div>
                   <div className="text-center p-3 bg-gray-800/50 rounded-lg">
-                    <p className="text-2xl font-bold text-green-400">{userData.wldEarned.toFixed(2)}</p>
-                    <p className="text-gray-400 text-sm">WLD Earned</p>
+                    {/* ✅ CORRIGIDO: WLD Earned → Referral Points */}
+                    <p className="text-2xl font-bold text-green-400">{userData.referralPoints}</p>
+                    <p className="text-gray-400 text-sm">Referral Points</p>
                   </div>
                 </div>
                 
@@ -244,17 +245,17 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* ACCOUNT INFO */}
+            {/* ACCOUNT INFO - ✅ CORRIGIDO */}
             <div className="p-6 bg-gradient-to-br from-gray-800/70 to-gray-900/70 rounded-2xl border border-yellow-800/30">
               <h2 className="text-xl font-bold mb-4 text-yellow-200">⚙️ Account Info</h2>
               <div className="space-y-3">
                 <div className="flex justify-between p-3 bg-gray-800/40 rounded-lg">
                   <span className="text-gray-300">Member Since</span>
-                  <span className="text-yellow-300">Dec 2024</span>
+                  <span className="text-yellow-300">Jan 2026</span> {/* ✅ CORRIGIDO: Data atual */}
                 </div>
                 <div className="flex justify-between p-3 bg-gray-800/40 rounded-lg">
-                  <span className="text-gray-300">WLD Balance</span>
-                  <span className="text-green-400 font-bold">0.024 WLD</span>
+                  <span className="text-gray-300">Game Balance</span> {/* ✅ CORRIGIDO: WLD Balance → Game Balance */}
+                  <span className="text-green-400 font-bold">2,450</span> {/* ✅ CORRIGIDO: Pontos em vez de WLD */}
                 </div>
                 <div className="flex justify-between p-3 bg-gray-800/40 rounded-lg">
                   <span className="text-gray-300">Next Game Available</span>

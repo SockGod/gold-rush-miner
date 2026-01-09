@@ -65,7 +65,7 @@ export default function HistoryPage() {
               </div>
             </div>
 
-            {/* DAILY REWARDS INFO (NOT CLAIMABLE HERE) */}
+            {/* DAILY REWARDS INFO (NOT CLAIMABLE HERE) - ✅ CORRIGIDO */}
             <div className="p-6 bg-gradient-to-br from-gray-800/70 to-gray-900/70 rounded-2xl border border-yellow-800/30">
               <h2 className="text-xl font-bold mb-4 text-yellow-200">🎁 Daily Rewards Info</h2>
               
@@ -76,7 +76,7 @@ export default function HistoryPage() {
                       <h4 className="font-bold">Level 1</h4>
                       <p className="text-sm text-gray-300">500 points today</p>
                     </div>
-                    <span className="font-bold text-green-400">0.002 WLD</span>
+                    <span className="font-bold text-green-400">Daily Reward</span> {/* ✅ CORRIGIDO */}
                   </div>
                   <p className="text-gray-400 text-sm text-center">
                     Claim in the game after verification
@@ -89,7 +89,7 @@ export default function HistoryPage() {
                       <h4 className="font-bold">Level 2</h4>
                       <p className="text-sm text-gray-300">5 games with 1500+ points each</p>
                     </div>
-                    <span className="font-bold text-yellow-300">0.010 WLD</span>
+                    <span className="font-bold text-yellow-300">Bonus Reward</span> {/* ✅ CORRIGIDO */}
                   </div>
                   <p className="text-gray-400 text-sm text-center">
                     Claim in the game after verification
