@@ -362,7 +362,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setActivePowerUps(prev => prev.filter(p => p.type !== 'precision'));
   };
 
-  // ✅ PURCHASE ITEM FUNCTION - FIXED WITH REFERENCE
+  // ✅ PURCHASE ITEM FUNCTION - SEM ALERTS DUPLICADOS
   const purchaseItem = async (itemId: string): Promise<boolean> => {
     const item = STORE_ITEMS.find(i => i.id === itemId);
     if (!item) {
@@ -412,29 +412,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       if (paymentResult.finalPayload?.status === 'success') {
         console.log('✅ Payment successful!');
         processInventoryUpdate(itemId, item);
-        alert(`✅ Successfully purchased ${item.name}!`);
+        // NÃO MOSTRAR ALERT - a WLD já mostra confirmação
         return true;
       } else {
         console.error('❌ Payment failed:', paymentResult.finalPayload?.status);
-        alert('Payment failed or was cancelled. Please try again.');
+        // NÃO MOSTRAR ALERT - a WLD já mostra erro
         return false;
       }
 
     } catch (error: any) {
       console.error('💥 Purchase error:', error);
       
-      // Friendly error messages
-      if (error.message?.includes('User rejected')) {
-        alert('Payment was cancelled. Please try again when ready.');
-      } else if (error.message?.includes('Insufficient')) {
-        alert('Insufficient WLD balance. Please add WLD to your wallet.');
-      } else if (error.message?.includes('MiniKit') || error.message?.includes('verify')) {
+      // Se não está na WLD ou MiniKit não disponível, usa demo mode
+      if (error.message?.includes('MiniKit') || error.message?.includes('verify')) {
         console.log('🔄 MiniKit/Verify error - falling back to demo mode');
         return processDemoPurchase(itemId, item);
-      } else {
-        alert('Payment error. Please try again or contact support.');
       }
       
+      // NÃO MOSTRAR ALERT - a WLD já mostra erros de pagamento
       return false;
     }
   };
@@ -443,7 +438,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const processDemoPurchase = (itemId: string, item: StoreItem): boolean => {
     console.log(`🎮 Demo purchase: ${item.name}`);
     processInventoryUpdate(itemId, item);
-    alert(`🎮 Demo: ${item.name} added to inventory!\nIn World App, this would be a real WLD purchase.`);
+    // NÃO MOSTRAR ALERT - a store/page.tsx já mostra mensagem
     return true;
   };
 

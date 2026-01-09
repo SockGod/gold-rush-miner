@@ -470,69 +470,23 @@ export function MiningGame() {
     return () => clearInterval(animationInterval);
   }, [explosions.length, isPlaying]);
 
-  // ✅ VERIFY WORLD ID - VERSÃO SIMPLIFICADA PARA MINI APPS
+    // ✅ VERIFY WORLD ID - VERSÃO SIMPLES
   const handleVerify = async () => {
-    console.log('🔄 handleVerify called - Mini App version');
+    console.log('🔐 Tentando verificar...');
     
     try {
-      // ✅ DETECÇÃO MELHORADA PARA WLD
-      // Método 1: Verificar se MiniKit está disponível (mais fiável)
-      const isInWorldApp = typeof MiniKit !== 'undefined' && MiniKit.isInstalled?.();
-      
-      // Método 2: Verificar user agent
-      const userAgent = navigator.userAgent.toLowerCase();
-      const isWorldAppUA = userAgent.includes('worldapp') || userAgent.includes('miniapp');
-      
-      // Método 3: Verificar se está em iframe (backup)
-      const isInIframe = window.self !== window.top;
-      
-      const isActuallyInWorldApp = isInWorldApp || isWorldAppUA || isInIframe;
-      
-      console.log('World App detection:', {
-        isInWorldApp, 
-        isWorldAppUA, 
-        isInIframe,
-        userAgent,
-        actuallyInWorldApp: isActuallyInWorldApp
-      });
-      
-      if (!isActuallyInWorldApp) {
-        alert('Please open this app within the World App to verify your World ID!');
-        return;
-      }
-      
-      console.log('📱 In World App - calling verify...');
-      
-      // ✅ FLUXO CORRETO PARA MINI APPS
       const result = await MiniKit.commandsAsync.verify({
-        action: 'gold-rush-miner-game', // Nome da tua ação
-        signal: 'play-game', // Um sinal único
+        action: 'gold-rush-miner',
+        signal: 'play',
       });
       
-      console.log('✅ Verify result for Mini App:', result);
-      
-      // ✅ PARA MINI APPS, o resultado vem direto
-      if (result && result.finalPayload?.status === 'success') {
-        console.log('🎉 World ID verified successfully!');
+      if (result.finalPayload?.status === 'success') {
         setIsVerified(true);
         setUsername('Gold Miner');
-        // O jogo está agora desbloqueado!
-      } else {
-        console.error('❌ Verification failed:', result);
-        alert('Could not verify your World ID. Please try again.');
+        console.log('✅ Verificado!');
       }
-      
-    } catch (error: any) {
-      console.error('💥 Verify error:', error);
-      
-      // Tratamento de erros simples
-      if (error?.message?.includes('User rejected')) {
-        alert('You cancelled the verification.');
-      } else if (error?.message?.includes('not available')) {
-        alert('World ID verification is not available. Please update your World App.');
-      } else {
-        alert('An error occurred during verification. Please try again.');
-      }
+    } catch (error) {
+      console.log('❌ Erro:', error);
     }
   };
 
