@@ -470,69 +470,51 @@ export function MiningGame() {
     return () => clearInterval(animationInterval);
   }, [explosions.length, isPlaying]);
 
-    // ✅ VERIFY WORLD ID - VERSÃO CORRIGIDA E TESTADA
+  // ✅ VERIFY WORLD ID - VERSÃO SIMPLIFICADA PARA MINI APPS
   const handleVerify = async () => {
-    console.log('🔄 handleVerify called');
+    console.log('🔄 handleVerify called - Mini App version');
     
     try {
-      // ✅ MELHOR DETECÇÃO: Primeiro tenta a biblioteca importada, depois window.MiniKit
-      const miniKitInstance = (typeof MiniKit !== 'undefined') ? MiniKit : window.MiniKit;
+      // Para Mini Apps, o MiniKit está sempre disponível dentro da WLD
+      // Se não estiver, estamos fora da WLD
+      const isInWorldApp = window.self !== window.top;
       
-      // Verifica se MiniKit está disponível de alguma forma
-      if (!miniKitInstance) {
-        console.error('❌ MiniKit is not defined anywhere');
-        
-        // ✅ FORA DA WLD: Mensagem clara para abrir na World App
-        // ✅ DENTRO DA WLD: Se chegou aqui, MiniKit deveria estar disponível
-        const isInWorldApp = window.self !== window.top;
-        if (isInWorldApp) {
-          alert('MiniKit not available in this World App version. Please update your app.');
-        } else {
-          alert('Please open this app within the World App to verify your World ID!');
-        }
+      if (!isInWorldApp) {
+        alert('Please open this app within the World App to verify your World ID!');
         return;
       }
       
-      // ✅ VERIFICA se o comando verify está disponível
-      if (!miniKitInstance.commandsAsync?.verify) {
-        console.error('❌ Verify command not available');
-        alert('World ID verification is not available. Please update your World App.');
-        return;
-      }
+      console.log('📱 In World App - calling verify...');
       
-      console.log('✅ MiniKit available, calling verify...');
-      
-      const verifyResult = await miniKitInstance.commandsAsync.verify({
-        action: 'gold-rush-miner-verify', // Ação específica para o teu jogo
-        signal: 'user-play-intent', // Um identificador único
+      // ✅ FLUXO CORRETO PARA MINI APPS
+      const result = await MiniKit.commandsAsync.verify({
+        action: 'gold-rush-miner-game', // Nome da tua ação
+        signal: 'play-game', // Um sinal único
       });
-
-      console.log('✅ Verify result:', verifyResult);
       
-      // ✅ CORREÇÃO: Usar finalPayload.status em vez de verifyResult.status
-      if (verifyResult.finalPayload?.status === 'success') {
-        console.log('✅ Verification successful!');
+      console.log('✅ Verify result for Mini App:', result);
+      
+      // ✅ PARA MINI APPS, o resultado vem direto
+      if (result && result.finalPayload?.status === 'success') {
+        console.log('🎉 World ID verified successfully!');
         setIsVerified(true);
         setUsername('Gold Miner');
-        
-        console.log('🎉 Game unlocked!');
+        // O jogo está agora desbloqueado!
       } else {
-        console.error('Verify failed with result:', verifyResult);
-        alert('Verification failed. Please try again.');
+        console.error('❌ Verification failed:', result);
+        alert('Could not verify your World ID. Please try again.');
       }
       
     } catch (error: any) {
       console.error('💥 Verify error:', error);
       
-      // ✅ MENSAGENS LIMPAS SEM POPUPS DUPLICADOS
-      if (error?.message?.includes('rejected') || error?.code === 'USER_REJECTED') {
-        alert('Verification was cancelled.');
-      } else if (error?.message?.includes('not available') || error?.message?.includes('verify')) {
-        // Se o verify não está disponível
-        alert('World ID verification is not available. Please ensure you are in the World App.');
+      // Tratamento de erros simples
+      if (error?.message?.includes('User rejected')) {
+        alert('You cancelled the verification.');
+      } else if (error?.message?.includes('not available')) {
+        alert('World ID verification is not available. Please update your World App.');
       } else {
-        // Erro genérico - MOSTRA APENAS UM ALERTA
-        alert('Could not verify. Please try again.');
+        alert('An error occurred during verification. Please try again.');
       }
     }
   };
