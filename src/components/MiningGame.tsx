@@ -489,17 +489,18 @@ export function MiningGame() {
         setIsVerified(true);
         setUsername('Gold Miner');
         
-        // Opcional: pegar username do walletAuth
+                // Opcional: pegar username do walletAuth
         try {
           const walletAuth = await MiniKit.commandsAsync.walletAuth({
             nonce: Date.now().toString(),
           });
           
-          if (walletAuth.finalPayload?.username) {
-            setUsername(walletAuth.finalPayload.username);
-          }
+          // ✅ CORREÇÃO: walletAuth não tem username, usamos valor padrão
+          setUsername('Gold Miner');
+          console.log('Wallet auth successful');
         } catch (authError) {
           console.log('Wallet auth optional, using default');
+          setUsername('Gold Miner');
         }
       } else {
         console.error('Verify failed with status:', verifyResult.finalPayload?.status);
