@@ -13,7 +13,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@worldcoin/mini-apps-ui-kit-react": "1.4.0",
+    "@worldcoin/mini-apps-ui-kit-react": "latest",
     "@worldcoin/minikit-js": "1.9.9",
     "@worldcoin/minikit-react": "1.9.10",
     "clsx": "^2.1.1",
