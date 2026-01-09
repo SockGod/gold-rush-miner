@@ -31,10 +31,8 @@ export function MiningGame() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [explosions, setExplosions] = useState<ExplosionAnimation[]>([]);
   
-  // Store Context for power-ups
   const store = useStore();
   
-  // Refs for diamonds control
   const diamondsSpawnedRef = useRef(0);
   const lastDiamondTimeRef = useRef(0);
   
@@ -75,7 +73,6 @@ export function MiningGame() {
   const [usingTNT, setUsingTNT] = useState(false);
   const [usingTimerBoost, setUsingTimerBoost] = useState(false);
   
-  // Audio state (only sound effects, no music)
   const [isMuted, setIsMuted] = useState(false);
 
   // Login streak state
@@ -114,29 +111,15 @@ export function MiningGame() {
     setIsMuted(!isMuted);
   };
 
-  // ✅ INICIALIZAÇÃO DO MINIKIT
+  // ✅ CHECAR SE ESTAMOS NA WORLD APP
   useEffect(() => {
-    const initializeMiniKit = () => {
-      console.log('🚀 Initializing MiniKit...');
-      
-      // Verifica se estamos na World App
-      const isInWorldApp = window.self !== window.top;
-      
-      if (isInWorldApp) {
-        console.log('📱 Running inside World App');
-        
-        // MiniKit já deve estar disponível via SDK
-        if (typeof MiniKit !== 'undefined') {
-          console.log('✅ MiniKit is available');
-        } else {
-          console.warn('⚠️ MiniKit not found - ensure MiniKit SDK is loaded');
-        }
-      } else {
-        console.log('🌐 Running in regular browser - MiniKit will not work');
-      }
-    };
+    console.log('🔄 App mounted - checking environment...');
+    console.log('MiniKit available:', typeof MiniKit !== 'undefined');
+    console.log('UserAgent:', navigator.userAgent);
     
-    initializeMiniKit();
+    // Verificar se estamos na World App
+    const isInWorldApp = window.self !== window.top;
+    console.log('Is in World App:', isInWorldApp);
   }, []);
 
   // Load ALL images
@@ -480,55 +463,65 @@ export function MiningGame() {
     return () => clearInterval(animationInterval);
   }, [explosions.length, isPlaying]);
 
-  // ✅ VERIFY WORLD ID - VERSÃO SIMPLES E FUNCIONAL
+  // ✅ VERIFY WORLD ID - FUNÇÃO ORIGINAL QUE FUNCIONAVA
   const handleVerify = async () => {
-    console.log('🔐 Starting World ID verification...');
+    console.log('🔄 handleVerify called');
     
     try {
-      console.log('1. Checking if MiniKit is available...');
-      
       // Verifica se MiniKit está disponível
-      if (typeof MiniKit === 'undefined' || typeof MiniKit.commandsAsync === 'undefined') {
-        console.error('❌ MiniKit is not available');
-        alert('World ID verification requires the World App. Please open this app in the World App.');
+      if (typeof MiniKit === 'undefined') {
+        console.error('❌ MiniKit is not defined');
+        alert('Please open this app within the World App to verify.');
         return;
       }
       
-      console.log('2. Calling MiniKit.commandsAsync.verify...');
+      console.log('MiniKit available, calling verify...');
       
-      // ✅ CÓDIGO CORRETO PARA A WLD
       const verifyResult = await MiniKit.commandsAsync.verify({
-        action: 'play-gold-rush-miner',
-        signal: 'verify-mining-game',
+        action: 'gold-rush-miner',
+        signal: 'play',
       });
 
-      console.log('3. Verify result received:', verifyResult);
+      console.log('Verify result:', verifyResult);
       
       if (verifyResult.finalPayload?.status === 'success') {
-        console.log('✅ World ID verification SUCCESS!');
+        console.log('✅ Verification successful!');
         setIsVerified(true);
         setUsername('Gold Miner');
         
+        // Opcional: pegar username do walletAuth
+        try {
+          const walletAuth = await MiniKit.commandsAsync.walletAuth({
+            nonce: Date.now().toString(),
+          });
+          
+          if (walletAuth.finalPayload?.username) {
+            setUsername(walletAuth.finalPayload.username);
+          }
+        } catch (authError) {
+          console.log('Wallet auth optional, using default');
+        }
       } else {
-        console.error('❌ Verify failed:', verifyResult.finalPayload);
+        console.error('Verify failed with status:', verifyResult.finalPayload?.status);
         alert('Verification failed. Please try again.');
       }
       
     } catch (error: any) {
-      console.error('💥 VERIFY ERROR:', error);
+      console.error('🔥 Verify error:', error);
       
-      // Mensagens de erro amigáveis
+      // ✅ MENSAGEM QUE FUNCIONAVA ANTES:
       if (error.message?.includes('User rejected')) {
-        alert('You cancelled the verification.');
+        alert('Verification cancelled.');
       } else if (error.message?.includes('verify')) {
-        alert('Verification service is not available. Please ensure you are using the latest World App version.');
+        // Esta é a mensagem que aparecia antes e funcionava!
+        alert('Please open in World App! This feature requires the World App.');
       } else {
-        alert('Verification failed. Please try again later.');
+        alert('Verification error: ' + (error.message || 'Unknown error'));
       }
     }
   };
 
-  // 🔥 POWER-UP FUNCTIONS
+  // 🔥 POWER-UP FUNCTIONS (mantém igual)
   const handleUseTNT = () => {
     if (!isPlaying || tntCount <= 0 || usingTNT) return;
     
