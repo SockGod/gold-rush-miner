@@ -364,21 +364,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   };
 
   // ============================================================================
-  // 🎯 MODIFIED FUNCTION: purchaseItem WITH REAL WLD PAYMENTS
+  // 🎯 MODIFIED FUNCTION: purchaseItem WITH REAL WLD PAYMENTS (BUG CORRECTED)
   // ============================================================================
   const purchaseItem = async (itemId: string): Promise<boolean> => {
     const item = STORE_ITEMS.find(i => i.id === itemId);
     if (!item) return false;
 
-    // Check if running in World App
-    if (!MiniKit.isInstalled()) {
-      console.error('❌ MiniKit not installed. Please open in World App.');
-      alert('Please open in World App to make purchases!');
-      return false;
-    }
-
     try {
       console.log(`🛒 Starting WLD payment: ${item.name} for ${item.price} WLD`);
+
+      // ✅ CORRIGIDO: Verificação melhorada para World App
+      const isInWorldApp = window.self !== window.top || 
+                          navigator.userAgent.includes('WorldApp');
+      
+      if (!isInWorldApp) {
+        console.log('⚠️ App may not be in World App, but continuing...');
+        // Não fazemos return, deixamos tentar!
+      }
 
       // 1. Generate payment reference (initiate payment)
       const initRes = await fetch('/api/initiate-payment', {
@@ -388,6 +390,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       
       if (!initRes.ok) {
         console.error('❌ Failed to initiate payment');
+        alert('Payment initialization failed. Please try again.');
         return false;
       }
       
@@ -412,6 +415,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       
       if (finalPayload.status !== 'success') {
         console.error('❌ Payment failed or was cancelled');
+        alert('Payment failed or was cancelled. Please try again.');
         return false;
       }
 
@@ -430,6 +434,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       
       if (!verification.success) {
         console.error('❌ Payment verification failed');
+        alert('Payment verification failed. Please contact support.');
         return false;
       }
 
@@ -458,11 +463,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }
 
       console.log(`🎉 Purchase completed: ${item.name}`);
+      alert(`✅ Successfully purchased ${item.name}!`);
       return true;
       
     } catch (error: any) {
       console.error('💥 Purchase error:', error);
-      alert(error.message || 'Payment failed. Please try again.');
+      
+      // User-friendly error messages
+      if (error.message?.includes('User rejected')) {
+        alert('Payment was cancelled. Please try again when ready.');
+      } else if (error.message?.includes('Insufficient')) {
+        alert('Insufficient WLD balance. Please add WLD to your wallet.');
+      } else {
+        alert('Payment failed. Please try again or contact support.');
+      }
+      
       return false;
     }
   };

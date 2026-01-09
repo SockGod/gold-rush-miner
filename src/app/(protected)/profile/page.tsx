@@ -116,7 +116,7 @@ export default function ProfilePage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-gray-300">Level 1 (500 points)</span>
-                    <span className="text-green-400 font-bold">0.002 WLD</span>
+                    <span className="text-green-400 font-bold">Daily Reward</span> {/* ✅ CORRIGIDO */}
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-3">
                     <div 
@@ -131,7 +131,7 @@ export default function ProfilePage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-gray-300">Level 2 (5 games 1500+)</span>
-                    <span className="text-yellow-300 font-bold">0.010 WLD</span>
+                    <span className="text-yellow-300 font-bold">Bonus Reward</span> {/* ✅ CORRIGIDO */}
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-3">
                     <div 
@@ -191,7 +191,7 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            {/* REFERRAL SYSTEM */}
+            {/* REFERRAL SYSTEM - ✅ CORRIGIDO */}
             <div className="p-6 bg-gradient-to-br from-gray-800/70 to-gray-900/70 rounded-2xl border border-yellow-800/30">
               <h2 className="text-xl font-bold mb-4 text-yellow-200">🤝 Invite Friends</h2>
               
@@ -199,10 +199,10 @@ export default function ProfilePage() {
                 <div className="p-4 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl border border-green-700">
                   <div className="flex justify-between items-center mb-2">
                     <div>
-                      <h3 className="font-bold">Invite Reward</h3>
-                      <p className="text-sm text-gray-300">Both get 0.01 WLD when friend completes 5 games</p>
+                      <h3 className="font-bold">Invite Friends!</h3>
+                      <p className="text-sm text-gray-300">Invite friends to join the mining adventure!</p> {/* ✅ CORRIGIDO */}
                     </div>
-                    <span className="font-bold text-green-400">0.01 WLD</span>
+                    <span className="font-bold text-green-400">🎁</span>
                   </div>
                   
                   <div className="flex items-center space-x-2 mt-3">
@@ -235,10 +235,10 @@ export default function ProfilePage() {
                 
                 <div className="pt-4 border-t border-gray-700">
                   <p className="text-center text-sm text-gray-400">
-                    Share your code with friends. Both earn 0.01 WLD after they play 5 games.
+                    Share your code with friends and expand the mining community! {/* ✅ CORRIGIDO */}
                   </p>
                   <p className="text-center text-xs text-gray-500 mt-1">
-                    WLD compliant: Skill-based rewards for actual gameplay
+                    Skill-based rewards for actual gameplay
                   </p>
                 </div>
               </div>

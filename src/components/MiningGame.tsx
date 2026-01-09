@@ -392,12 +392,12 @@ export function MiningGame() {
           localStorage.setItem('goldrush_claimed_level1', 'true');
           setClaimedLevel1(true);
           setCanClaimLevel1(false);
-          setClaimMessage('🎉 0.002 WLD received! (Level 1)');
+          setClaimMessage('🎉 Daily Reward Unlocked! (Level 1)'); // ✅ CORRIGIDO
         } else {
           localStorage.setItem('goldrush_claimed_level2', 'true');
           setClaimedLevel2(true);
           setCanClaimLevel2(false);
-          setClaimMessage('🎉 0.010 WLD received! (Level 2)');
+          setClaimMessage('🎉 Bonus Reward Unlocked! (Level 2)'); // ✅ CORRIGIDO
         }
         
         setTimeout(() => {
@@ -467,13 +467,9 @@ export function MiningGame() {
     return () => clearInterval(animationInterval);
   }, [explosions.length, isPlaying]);
 
-  // Verify World ID
+  // Verify World ID - ✅ CORRIGIDO (removida verificação MiniKit.isInstalled)
   const handleVerify = async () => {
-    if (!MiniKit.isInstalled()) {
-      alert('Please open in World App!');
-      return;
-    }
-
+    // ✅ REMOVIDO O CHECK DO MiniKit.isInstalled() que causa erro na World App
     try {
       const { finalPayload } = await MiniKit.commandsAsync.verify({
         action: 'play-gold-rush',
@@ -1089,7 +1085,7 @@ export function MiningGame() {
                       }`}
                     >
                       {claimedLevel1 ? '✅ ALREADY CLAIMED' : 
-                       canClaimLevel1 ? '🎯 CLAIM 0.002 WLD' : 
+                       canClaimLevel1 ? '🎯 CLAIM REWARD' :  // ✅ CORRIGIDO
                        '⏳ IN PROGRESS'}
                     </button>
                   </div>
@@ -1126,7 +1122,7 @@ export function MiningGame() {
                       }`}
                     >
                       {claimedLevel2 ? '✅ ALREADY CLAIMED' : 
-                       canClaimLevel2 ? '🏆 CLAIM 0.010 WLD' : 
+                       canClaimLevel2 ? '🏆 CLAIM BONUS' :  // ✅ CORRIGIDO
                        '⏳ IN PROGRESS'}
                     </button>
                   </div>
