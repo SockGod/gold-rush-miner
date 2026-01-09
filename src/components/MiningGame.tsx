@@ -475,11 +475,28 @@ export function MiningGame() {
     console.log('🔄 handleVerify called - Mini App version');
     
     try {
-      // Para Mini Apps, o MiniKit está sempre disponível dentro da WLD
-      // Se não estiver, estamos fora da WLD
-      const isInWorldApp = window.self !== window.top;
+      // ✅ DETECÇÃO MELHORADA PARA WLD
+      // Método 1: Verificar se MiniKit está disponível (mais fiável)
+      const isInWorldApp = typeof MiniKit !== 'undefined' && MiniKit.isInstalled?.();
       
-      if (!isInWorldApp) {
+      // Método 2: Verificar user agent
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isWorldAppUA = userAgent.includes('worldapp') || userAgent.includes('miniapp');
+      
+      // Método 3: Verificar se está em iframe (backup)
+      const isInIframe = window.self !== window.top;
+      
+      const isActuallyInWorldApp = isInWorldApp || isWorldAppUA || isInIframe;
+      
+      console.log('World App detection:', {
+        isInWorldApp, 
+        isWorldAppUA, 
+        isInIframe,
+        userAgent,
+        actuallyInWorldApp: isActuallyInWorldApp
+      });
+      
+      if (!isActuallyInWorldApp) {
         alert('Please open this app within the World App to verify your World ID!');
         return;
       }
