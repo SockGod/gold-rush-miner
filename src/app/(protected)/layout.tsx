@@ -8,24 +8,18 @@ export default function TabsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black">
       {/* CONTEÚDO PRINCIPAL COM ESPAÇO PARA NAVIGATION */}
-      <div style={{ paddingBottom: '70px' }}>
+      <div className="pb-20">
         {children}
       </div>
       
-      {/* NAVIGATION FIXO NO FUNDO */}
-      <div style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: 'white',
-        padding: '10px 0',
-        zIndex: 100
-      }}>
-        <Navigation />
+      {/* NAVIGATION FIXO NO FUNDO - CENTRADO COM FLEX */}
+      <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 py-2 z-50">
+        <div className="flex justify-center">
+          <Navigation />
+        </div>
       </div>
-    </>
+    </div>
   );
 }
