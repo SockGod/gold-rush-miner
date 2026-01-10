@@ -1113,37 +1113,37 @@ export function MiningGame() {
             </div>
           ) : (
             <>
-              {/* ⭐ PÁGINA DO JOGO - SIMPLIFICADA E OTIMIZADA ⭐ */}
+              {/* ⭐ PÁGINA DO JOGO - SIMPLIFICADA AO MÁXIMO ⭐ */}
               
-              {/* TIME + SCORE (compacto) */}
-              <div className="flex justify-between w-full px-2 mb-3">
-                <div className="text-center p-2 bg-gray-800/50 rounded-lg">
-                  <p className="text-xs text-gray-300">TIME</p>
-                  <p className="text-xl font-bold">⏱️ {timeLeft}s</p>
+              {/* TIME + SCORE (SUPER COMPACTO) */}
+              <div className="flex justify-between w-full px-2 mb-2">
+                <div className="text-center p-1 bg-gray-800/50 rounded-lg">
+                  <p className="text-[10px] text-gray-300">TIME</p>
+                  <p className="text-lg font-bold">⏱️ {timeLeft}s</p>
                 </div>
-                <div className="text-center p-2 bg-gray-800/50 rounded-lg">
-                  <p className="text-xs text-gray-300">SCORE</p>
-                  <p className="text-xl font-bold">💰 {score}</p>
+                <div className="text-center p-1 bg-gray-800/50 rounded-lg">
+                  <p className="text-[10px] text-gray-300">SCORE</p>
+                  <p className="text-lg font-bold">💰 {score}</p>
                 </div>
               </div>
 
-              {/* POWER-UP BUTTONS (compacto) */}
+              {/* POWER-UP BUTTONS (compacto) - APENAS SE HOUVER */}
               {showPowerUpButtons && (tntCount > 0 || timerBoostCount > 0) && (
-                <div className="flex justify-center space-x-3 mb-3 w-full px-4">
+                <div className="flex justify-center space-x-2 mb-2 w-full px-4">
                   {tntCount > 0 && (
                     <button
                       onClick={handleUseTNT}
                       disabled={usingTNT}
-                      className={`flex items-center justify-center px-3 py-1 rounded-xl font-bold transition-all ${
+                      className={`flex items-center justify-center px-2 py-1 rounded-lg font-bold transition-all text-xs ${
                         usingTNT
                           ? 'bg-gray-700 cursor-not-allowed'
                           : 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700'
                       }`}
                     >
-                      <span className="text-lg mr-1">🧨</span>
+                      <span className="text-md mr-1">🧨</span>
                       <div className="text-left">
                         <div className="text-xs">TNT</div>
-                        <div className="text-[10px]">({tntCount})</div>
+                        <div className="text-[9px]">({tntCount})</div>
                       </div>
                     </button>
                   )}
@@ -1152,16 +1152,16 @@ export function MiningGame() {
                     <button
                       onClick={handleUseTimerBoost}
                       disabled={usingTimerBoost}
-                      className={`flex items-center justify-center px-3 py-1 rounded-xl font-bold transition-all ${
+                      className={`flex items-center justify-center px-2 py-1 rounded-lg font-bold transition-all text-xs ${
                         usingTimerBoost
                           ? 'bg-gray-700 cursor-not-allowed'
                           : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'
                       }`}
                     >
-                      <span className="text-lg mr-1">⏱️</span>
+                      <span className="text-md mr-1">⏱️</span>
                       <div className="text-left">
                         <div className="text-xs">+30s</div>
-                        <div className="text-[10px]">({timerBoostCount})</div>
+                        <div className="text-[9px]">({timerBoostCount})</div>
                       </div>
                     </button>
                   )}
@@ -1199,17 +1199,6 @@ export function MiningGame() {
                 )}
               </div>
 
-              {/* STREAK BONUS - AGORA DEPOIS DO CANVAS */}
-              {streakBonus > 0 && (
-                <div className="w-full px-6 mt-3">
-                  <div className="p-2 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 rounded-lg text-center">
-                    <p className="text-sm text-yellow-300">
-                      🔥 STREAK BONUS: +{streakBonus}% points (Day {loginStreak})
-                    </p>
-                  </div>
-                </div>
-              )}
-
               {/* ÍCONES DO JOGO */}
               <div className="flex justify-between w-full mt-3 text-sm px-6">
                 <div className="flex flex-col items-center">
@@ -1225,12 +1214,6 @@ export function MiningGame() {
                   <span className="text-red-400 font-bold">-5</span>
                 </div>
               </div>
-              
-              {(tntCount > 0 || timerBoostCount > 0) && (
-                <div className="mt-3 text-center text-sm text-gray-300">
-                  <p>Use buttons above to activate power-ups during the game!</p>
-                </div>
-              )}
             </>
           )}
         </div>
