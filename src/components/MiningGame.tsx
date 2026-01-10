@@ -870,41 +870,44 @@ export function MiningGame() {
         </div>
       ) : (
         <div className="flex flex-col items-center w-full max-w-md">
-          <div className="w-full p-4 mb-6 bg-gray-800/30 rounded-xl text-center">
-            <p className="text-lg">
-              Hello, <span className="font-bold text-yellow-300">{username}</span>!
-            </p>
-            <p className="text-gray-300 mt-1">Find rare diamonds! 💎</p>
-            
-            {(tntCount > 0 || timerBoostCount > 0 || store.getPrecisionCount() > 0 || extraPlaysCount > 0) && (
-              <div className="mt-3 flex justify-center space-x-4 flex-wrap">
-                {tntCount > 0 && (
-                  <div className="flex items-center bg-red-900/30 px-3 py-1 rounded-lg">
-                    <span className="mr-2">🧨</span>
-                    <span className="font-bold">{tntCount}</span>
-                  </div>
-                )}
-                {timerBoostCount > 0 && (
-                  <div className="flex items-center bg-blue-900/30 px-3 py-1 rounded-lg">
-                    <span className="mr-2">⏱️</span>
-                    <span className="font-bold">{timerBoostCount}</span>
-                  </div>
-                )}
-                {store.getPrecisionCount() > 0 && (
-                  <div className="flex items-center bg-purple-900/30 px-3 py-1 rounded-lg">
-                    <span className="mr-2">🎯</span>
-                    <span className="font-bold">{store.getPrecisionCount()} uses</span>
-                  </div>
-                )}
-                {extraPlaysCount > 0 && (
-                  <div className="flex items-center bg-green-900/30 px-3 py-1 rounded-lg">
-                    <span className="mr-2">🔄</span>
-                    <span className="font-bold">{extraPlaysCount}</span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          {/* PRIMEIRO RETÂNGULO - SÓ APARECE ANTES DO JOGO */}
+          {!isPlaying && (
+            <div className="w-full p-4 mb-6 bg-gray-800/30 rounded-xl text-center">
+              <p className="text-lg">
+                Hello, <span className="font-bold text-yellow-300">{username}</span>!
+              </p>
+              <p className="text-gray-300 mt-1">Find rare diamonds! 💎</p>
+              
+              {(tntCount > 0 || timerBoostCount > 0 || store.getPrecisionCount() > 0 || extraPlaysCount > 0) && (
+                <div className="mt-3 flex justify-center space-x-4 flex-wrap">
+                  {tntCount > 0 && (
+                    <div className="flex items-center bg-red-900/30 px-3 py-1 rounded-lg">
+                      <span className="mr-2">🧨</span>
+                      <span className="font-bold">{tntCount}</span>
+                    </div>
+                  )}
+                  {timerBoostCount > 0 && (
+                    <div className="flex items-center bg-blue-900/30 px-3 py-1 rounded-lg">
+                      <span className="mr-2">⏱️</span>
+                      <span className="font-bold">{timerBoostCount}</span>
+                    </div>
+                  )}
+                  {store.getPrecisionCount() > 0 && (
+                    <div className="flex items-center bg-purple-900/30 px-3 py-1 rounded-lg">
+                      <span className="mr-2">🎯</span>
+                      <span className="font-bold">{store.getPrecisionCount()} uses</span>
+                    </div>
+                  )}
+                  {extraPlaysCount > 0 && (
+                    <div className="flex items-center bg-green-900/30 px-3 py-1 rounded-lg">
+                      <span className="mr-2">🔄</span>
+                      <span className="font-bold">{extraPlaysCount}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {!isPlaying ? (
             <div className="flex flex-col items-center w-full">
@@ -1110,6 +1113,7 @@ export function MiningGame() {
             </div>
           ) : (
             <>
+              {/* ⭐ PÁGINA DO JOGO - SEM O "HELLO GOLD MINER!" ⭐ */}
               <div className="flex justify-between w-full px-2 mb-4">
                 <div className="text-center p-3 bg-gray-800/50 rounded-lg">
                   <p className="text-sm text-gray-300">TIME</p>
