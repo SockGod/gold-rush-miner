@@ -9,7 +9,7 @@ export default function TabsLayout({
 }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black">
-      <div className="pb-20">
+      <div className="pb-24"> {/* AUMENTEI DE 20 PARA 24 */}
         {children}
       </div>
       
