@@ -27,7 +27,6 @@ export const Navigation = () => {
     else if (newValue === 'profile') router.push('/profile');
   };
 
-  // ⬇️ ⚠️ CÓDIGO ORIGINAL FUNCIONAL (SEM DIV EXTRA, SEM STYLE) ⬇️
   return (
     <Tabs value={value} onValueChange={handleTabChange}>
       <TabItem value="home" icon={<Home />} label="Home" />
