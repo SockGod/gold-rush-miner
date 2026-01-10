@@ -80,6 +80,9 @@ export function StorePage() {
     }
   };
 
+  // Touch feedback state
+  const [touchedButton, setTouchedButton] = useState<string | null>(null);
+
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       {/* Header with back button */}
@@ -228,11 +231,18 @@ export function StorePage() {
                 {/* Purchase Button */}
                 <button
                   onClick={() => handlePurchase(item.id)}
+                  onTouchStart={() => setTouchedButton(item.id)}
+                  onTouchEnd={() => setTouchedButton(null)}
+                  onMouseDown={() => setTouchedButton(item.id)}
+                  onMouseUp={() => setTouchedButton(null)}
+                  onMouseLeave={() => setTouchedButton(null)}
                   disabled={isPurchasing === item.id}
-                  className={`w-full py-3 rounded-xl font-bold text-lg transition-all duration-200 ${
+                  className={`w-full py-3 rounded-xl font-bold text-lg transition-all duration-150 ${
                     isPurchasing === item.id
                       ? 'bg-gray-700 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 hover:shadow-lg hover:shadow-yellow-500/20'
+                      : touchedButton === item.id
+                      ? 'bg-gradient-to-r from-yellow-800 to-orange-800 scale-[0.96] shadow-inner'
+                      : 'bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700'
                   }`}
                 >
                   {isPurchasing === item.id ? '🔄 Processing...' : '✨ BUY NOW'}
@@ -299,10 +309,17 @@ export function StorePage() {
                   {/* Purchase Button */}
                   <button
                     onClick={() => handlePurchase(item.id)}
+                    onTouchStart={() => setTouchedButton(item.id)}
+                    onTouchEnd={() => setTouchedButton(null)}
+                    onMouseDown={() => setTouchedButton(item.id)}
+                    onMouseUp={() => setTouchedButton(null)}
+                    onMouseLeave={() => setTouchedButton(null)}
                     disabled={isPurchasing === item.id}
-                    className={`w-full py-2 rounded-lg font-medium mt-3 ${
+                    className={`w-full py-2 rounded-lg font-medium mt-3 transition-all duration-150 ${
                       isPurchasing === item.id
                         ? 'bg-gray-700 cursor-not-allowed'
+                        : touchedButton === item.id
+                        ? 'bg-gradient-to-r from-blue-800 to-cyan-800 scale-[0.96] shadow-inner'
                         : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'
                     }`}
                   >
