@@ -1113,44 +1113,37 @@ export function MiningGame() {
             </div>
           ) : (
             <>
-              {/* ⭐ PÁGINA DO JOGO - SEM O "HELLO GOLD MINER!" ⭐ */}
-              <div className="flex justify-between w-full px-2 mb-4">
-                <div className="text-center p-3 bg-gray-800/50 rounded-lg">
-                  <p className="text-sm text-gray-300">TIME</p>
-                  <p className="text-2xl font-bold">⏱️ {timeLeft}s</p>
+              {/* ⭐ PÁGINA DO JOGO - SIMPLIFICADA E OTIMIZADA ⭐ */}
+              
+              {/* TIME + SCORE (compacto) */}
+              <div className="flex justify-between w-full px-2 mb-3">
+                <div className="text-center p-2 bg-gray-800/50 rounded-lg">
+                  <p className="text-xs text-gray-300">TIME</p>
+                  <p className="text-xl font-bold">⏱️ {timeLeft}s</p>
                 </div>
-                <div className="text-center p-3 bg-gray-800/50 rounded-lg">
-                  <p className="text-sm text-gray-300">SCORE</p>
-                  <p className="text-2xl font-bold">💰 {score}</p>
+                <div className="text-center p-2 bg-gray-800/50 rounded-lg">
+                  <p className="text-xs text-gray-300">SCORE</p>
+                  <p className="text-xl font-bold">💰 {score}</p>
                 </div>
               </div>
 
-              {streakBonus > 0 && (
-                <div className="w-full px-6 mb-2">
-                  <div className="p-2 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 rounded-lg text-center">
-                    <p className="text-sm text-yellow-300">
-                      🔥 STREAK BONUS: +{streakBonus}% points (Day {loginStreak})
-                    </p>
-                  </div>
-                </div>
-              )}
-
+              {/* POWER-UP BUTTONS (compacto) */}
               {showPowerUpButtons && (tntCount > 0 || timerBoostCount > 0) && (
-                <div className="flex justify-center space-x-4 mb-4 w-full px-6">
+                <div className="flex justify-center space-x-3 mb-3 w-full px-4">
                   {tntCount > 0 && (
                     <button
                       onClick={handleUseTNT}
                       disabled={usingTNT}
-                      className={`flex items-center justify-center px-4 py-2 rounded-xl font-bold transition-all ${
+                      className={`flex items-center justify-center px-3 py-1 rounded-xl font-bold transition-all ${
                         usingTNT
                           ? 'bg-gray-700 cursor-not-allowed'
                           : 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700'
                       }`}
                     >
-                      <span className="text-xl mr-2">🧨</span>
+                      <span className="text-lg mr-1">🧨</span>
                       <div className="text-left">
-                        <div className="text-sm">TNT</div>
-                        <div className="text-xs">({tntCount})</div>
+                        <div className="text-xs">TNT</div>
+                        <div className="text-[10px]">({tntCount})</div>
                       </div>
                     </button>
                   )}
@@ -1159,22 +1152,23 @@ export function MiningGame() {
                     <button
                       onClick={handleUseTimerBoost}
                       disabled={usingTimerBoost}
-                      className={`flex items-center justify-center px-4 py-2 rounded-xl font-bold transition-all ${
+                      className={`flex items-center justify-center px-3 py-1 rounded-xl font-bold transition-all ${
                         usingTimerBoost
                           ? 'bg-gray-700 cursor-not-allowed'
                           : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'
                       }`}
                     >
-                      <span className="text-xl mr-2">⏱️</span>
+                      <span className="text-lg mr-1">⏱️</span>
                       <div className="text-left">
-                        <div className="text-sm">+30s</div>
-                        <div className="text-xs">({timerBoostCount})</div>
+                        <div className="text-xs">+30s</div>
+                        <div className="text-[10px]">({timerBoostCount})</div>
                       </div>
                     </button>
                   )}
                 </div>
               )}
 
+              {/* CANVAS DO JOGO - AGORA VISÍVEL IMEDIATAMENTE */}
               <div className="relative w-full">
                 <canvas
                   ref={canvasRef}
@@ -1191,7 +1185,7 @@ export function MiningGame() {
                 
                 {precisionActive && (
                   <div className="absolute top-0 left-0 right-0 p-2 bg-gradient-to-r from-purple-900/70 to-purple-700/70 rounded-t-2xl text-center">
-                    <p className="text-white font-bold">
+                    <p className="text-white font-bold text-sm">
                       🎯 PRECISION ACTIVE: Hitbox +50% ({precisionTimeLeft}s)
                     </p>
                   </div>
@@ -1205,6 +1199,18 @@ export function MiningGame() {
                 )}
               </div>
 
+              {/* STREAK BONUS - AGORA DEPOIS DO CANVAS */}
+              {streakBonus > 0 && (
+                <div className="w-full px-6 mt-3">
+                  <div className="p-2 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 rounded-lg text-center">
+                    <p className="text-sm text-yellow-300">
+                      🔥 STREAK BONUS: +{streakBonus}% points (Day {loginStreak})
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* ÍCONES DO JOGO */}
               <div className="flex justify-between w-full mt-3 text-sm px-6">
                 <div className="flex flex-col items-center">
                   <img src="/game-assets/moeda01.png" className="w-8 h-8 mb-1" alt="Gold" />
@@ -1221,7 +1227,7 @@ export function MiningGame() {
               </div>
               
               {(tntCount > 0 || timerBoostCount > 0) && (
-                <div className="mt-4 text-center text-sm text-gray-300">
+                <div className="mt-3 text-center text-sm text-gray-300">
                   <p>Use buttons above to activate power-ups during the game!</p>
                 </div>
               )}
