@@ -1163,7 +1163,7 @@ export function MiningGame() {
                 </div>
               )}
 
-              <div className="relative w-full">
+                            <div className="relative w-full mb-40 pb-10"> {/* ← ADICIONADO: mb-40 pb-10 */}
                 <canvas
                   ref={canvasRef}
                   width={375}
