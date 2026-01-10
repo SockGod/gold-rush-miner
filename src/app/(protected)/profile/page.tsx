@@ -5,12 +5,12 @@ export const dynamic = 'force-dynamic';
 
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/components/StoreContext';
-import { useEffect, useState } from 'react'; // ADICIONADO
+import { useEffect, useState } from 'react';
 
 export default function ProfilePage() {
   const router = useRouter();
   const store = useStore();
-  const [progressData, setProgressData] = useState({ // ADICIONADO: useState
+  const [progressData, setProgressData] = useState({
     dailyScore: 0,
     highScoreGames: 0,
     level1Target: 500,
@@ -46,14 +46,21 @@ export default function ProfilePage() {
     };
     
     setProgressData(getRealProgressData());
+    
+    // Atualizar a cada 10 segundos para dados em tempo real
+    const interval = setInterval(() => {
+      setProgressData(getRealProgressData());
+    }, 10000);
+    
+    return () => clearInterval(interval);
   }, []);
 
-  // Get user data for referral (example data) - ✅ CORRIGIDO
+  // Get user data for referral (example data)
   const userData = {
     username: 'Miner',
-    referralCode: `GOLDRUSH-MINER`, // ✅ Simplificado
+    referralCode: `GOLDRUSH-MINER`,
     friendsInvited: 3,
-    referralPoints: 9, // ✅ CORRIGIDO: friendsInvited * 3
+    referralPoints: 9,
   };
 
   return (
@@ -109,41 +116,66 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* TODAY'S PROGRESS - WITH REAL DATA */}
+            {/* TODAY'S PROGRESS - REAL-TIME DATA WITH LIVE INDICATOR */}
             <div className="p-6 bg-gradient-to-br from-gray-800/70 to-gray-900/70 rounded-2xl border border-yellow-800/30">
-              <h2 className="text-xl font-bold mb-4 text-yellow-200">📅 Today's Progress</h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <h2 className="text-xl font-bold text-yellow-200">📅 Today's Progress</h2>
+                  <span className="ml-2 text-xs bg-green-900/30 text-green-400 px-2 py-1 rounded-full animate-pulse">LIVE</span>
+                </div>
+                <span className="text-sm text-gray-400">{new Date().toLocaleDateString()}</span>
+              </div>
+              
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between mb-1">
-                    <span className="text-gray-300">Level 1 (500 points)</span>
-                    <span className="text-green-400 font-bold">Daily Reward</span> {/* ✅ CORRIGIDO */}
+                    <div className="flex items-center">
+                      <span className="text-gray-300">Level 1: Daily Reward</span>
+                      <span className="ml-2 text-xs bg-green-900/30 text-green-400 px-2 py-0.5 rounded">500 pts</span>
+                    </div>
+                    <span className="text-green-400 font-bold">
+                      {progressData.dailyScore >= 500 ? '✅ Ready!' : 'In Progress'}
+                    </span>
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-3">
                     <div 
-                      className="bg-green-500 h-3 rounded-full" 
+                      className="bg-green-500 h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min(100, (progressData.dailyScore / progressData.level1Target) * 100)}%` }}
                     ></div>
                   </div>
                   <p className="text-gray-400 text-sm mt-1">
-                    {progressData.dailyScore}/{progressData.level1Target} points collected
+                    {progressData.dailyScore}/{progressData.level1Target} points • 
+                    <span className={progressData.dailyScore >= 500 ? 'text-green-400' : 'text-yellow-300'}>
+                      {progressData.dailyScore >= 500 ? ' Ready to claim!' : ` ${progressData.level1Target - progressData.dailyScore} pts left`}
+                    </span>
                   </p>
                 </div>
+                
                 <div>
                   <div className="flex justify-between mb-1">
-                    <span className="text-gray-300">Level 2 (5 games 1500+)</span>
-                    <span className="text-yellow-300 font-bold">Bonus Reward</span> {/* ✅ CORRIGIDO */}
+                    <div className="flex items-center">
+                      <span className="text-gray-300">Level 2: Bonus Reward</span>
+                      <span className="ml-2 text-xs bg-yellow-900/30 text-yellow-400 px-2 py-0.5 rounded">5 games</span>
+                    </div>
+                    <span className="text-yellow-300 font-bold">
+                      {progressData.highScoreGames >= 5 ? '✅ Ready!' : 'In Progress'}
+                    </span>
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-3">
                     <div 
-                      className="bg-yellow-500 h-3 rounded-full" 
+                      className="bg-yellow-500 h-3 rounded-full transition-all duration-500" 
                       style={{ width: `${Math.min(100, (progressData.highScoreGames / progressData.level2Target) * 100)}%` }}
                     ></div>
                   </div>
                   <p className="text-gray-400 text-sm mt-1">
-                    {progressData.highScoreGames}/{progressData.level2Target} high-score games
+                    {progressData.highScoreGames}/{progressData.level2Target} games • 
+                    <span className={progressData.highScoreGames >= 5 ? 'text-green-400' : 'text-yellow-300'}>
+                      {progressData.highScoreGames >= 5 ? ' Ready to claim!' : ` ${progressData.level2Target - progressData.highScoreGames} games left`}
+                    </span>
                   </p>
                 </div>
               </div>
+              
               <div className="mt-6 pt-4 border-t border-gray-700">
                 <p className="text-sm text-center text-gray-400">
                   ⚠️ Rewards are claimed in the main game after World ID verification
@@ -191,7 +223,7 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            {/* REFERRAL SYSTEM - ✅ CORRIGIDO COMPLETAMENTE */}
+            {/* REFERRAL SYSTEM */}
             <div className="p-6 bg-gradient-to-br from-gray-800/70 to-gray-900/70 rounded-2xl border border-yellow-800/30">
               <h2 className="text-xl font-bold mb-4 text-yellow-200">🤝 Invite Friends</h2>
               
@@ -200,7 +232,7 @@ export default function ProfilePage() {
                   <div className="flex justify-between items-center mb-2">
                     <div>
                       <h3 className="font-bold">Invite Friends!</h3>
-                      <p className="text-sm text-gray-300">Invite friends to join the mining adventure!</p> {/* ✅ CORRIGIDO */}
+                      <p className="text-sm text-gray-300">Invite friends to join the mining adventure!</p>
                     </div>
                     <span className="font-bold text-green-400">🎁</span>
                   </div>
@@ -228,7 +260,6 @@ export default function ProfilePage() {
                     <p className="text-gray-400 text-sm">Friends Invited</p>
                   </div>
                   <div className="text-center p-3 bg-gray-800/50 rounded-lg">
-                    {/* ✅ CORRIGIDO: WLD Earned → Referral Points */}
                     <p className="text-2xl font-bold text-green-400">{userData.referralPoints}</p>
                     <p className="text-gray-400 text-sm">Referral Points</p>
                   </div>
@@ -236,7 +267,7 @@ export default function ProfilePage() {
                 
                 <div className="pt-4 border-t border-gray-700">
                   <p className="text-center text-sm text-gray-400">
-                    Share your code with friends and expand the mining community! {/* ✅ CORRIGIDO */}
+                    Share your code with friends and expand the mining community!
                   </p>
                   <p className="text-center text-xs text-gray-500 mt-1">
                     Skill-based rewards for actual gameplay
@@ -245,17 +276,17 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* ACCOUNT INFO - ✅ CORRIGIDO */}
+            {/* ACCOUNT INFO */}
             <div className="p-6 bg-gradient-to-br from-gray-800/70 to-gray-900/70 rounded-2xl border border-yellow-800/30">
               <h2 className="text-xl font-bold mb-4 text-yellow-200">⚙️ Account Info</h2>
               <div className="space-y-3">
                 <div className="flex justify-between p-3 bg-gray-800/40 rounded-lg">
                   <span className="text-gray-300">Member Since</span>
-                  <span className="text-yellow-300">Jan 2026</span> {/* ✅ CORRIGIDO: Data atual */}
+                  <span className="text-yellow-300">Jan 2026</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-800/40 rounded-lg">
-                  <span className="text-gray-300">Game Balance</span> {/* ✅ CORRIGIDO: WLD Balance → Game Balance */}
-                  <span className="text-green-400 font-bold">2,450</span> {/* ✅ CORRIGIDO: Pontos em vez de WLD */}
+                  <span className="text-gray-300">Game Balance</span>
+                  <span className="text-green-400 font-bold">2,450</span>
                 </div>
                 <div className="flex justify-between p-3 bg-gray-800/40 rounded-lg">
                   <span className="text-gray-300">Next Game Available</span>
