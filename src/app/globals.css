@@ -1,21 +1,26 @@
-/* PASSO 1: BLOQUEAR SCROLL TOTAL - CRÍTICO PARA WLD */
-html, body, #__next {
+/* SCROLL NORMAL EM TODAS AS PÁGINAS */
+html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden !important;
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
 }
 
-/* Tailwind - usar apenas esta linha */
+/* Importação do Tailwind */
 @import "tailwindcss";
 
-/* Estilos base */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
 body {
-  background: #0a0a0a;
-  color: #ededed;
+  background: var(--background);
+  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
