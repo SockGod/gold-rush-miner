@@ -362,7 +362,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setActivePowerUps(prev => prev.filter(p => p.type !== 'precision'));
   };
 
-  // ✅ PURCHASE ITEM FUNCTION - SEM ALERTS DUPLICADOS
+  // ✅ PURCHASE ITEM FUNCTION - COM VERIFICAÇÃO BACKEND (OBRIGATÓRIO!)
   const purchaseItem = async (itemId: string): Promise<boolean> => {
     const item = STORE_ITEMS.find(i => i.id === itemId);
     if (!item) {
@@ -391,14 +391,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         return processDemoPurchase(itemId, item);
       }
 
-      // ✅ GENERATE UNIQUE REFERENCE (required by WLD)
+      // ✅ 1. GERAR REFERÊNCIA ÚNICA (obrigatório)
       const reference = `goldrush_${itemId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
-      // ✅ REAL WLD PAYMENT WITH REFERENCE
+      // ✅ 2. FAZER PAGAMENTO WLD REAL
       console.log('💰 Starting real WLD payment...');
       
       const paymentResult = await MiniKit.commandsAsync.pay({
-        reference, // ✅ REQUIRED FIELD
+        reference, // ✅ REFERÊNCIA ÚNICA
         to: '0x7dba00d3544b999834b2fb12b46528cad6459d36',
         tokens: [{
           symbol: Tokens.WLD,
@@ -409,14 +409,35 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
       console.log('💳 Payment result:', paymentResult);
 
+      // ✅ 3. VERIFICAR COM BACKEND (CRÍTICO PARA SEGURANÇA!)
       if (paymentResult.finalPayload?.status === 'success') {
-        console.log('✅ Payment successful!');
-        processInventoryUpdate(itemId, item);
-        // NÃO MOSTRAR ALERT - a WLD já mostra confirmação
-        return true;
+        console.log('✅ Payment initiated, verifying with backend...');
+        
+        try {
+          const verifyResponse = await fetch('/api/confirm-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              payload: paymentResult.finalPayload
+            })
+          });
+          
+          const verifyResult = await verifyResponse.json();
+          
+          if (verifyResult.success) {
+            console.log('✅ Payment verified! Adding to inventory.');
+            processInventoryUpdate(itemId, item);
+            return true;
+          } else {
+            console.error('❌ Payment verification failed:', verifyResult.message);
+            return false;
+          }
+        } catch (error) {
+          console.error('❌ Verification error:', error);
+          return false;
+        }
       } else {
         console.error('❌ Payment failed:', paymentResult.finalPayload?.status);
-        // NÃO MOSTRAR ALERT - a WLD já mostra erro
         return false;
       }
 
@@ -429,7 +450,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         return processDemoPurchase(itemId, item);
       }
       
-      // NÃO MOSTRAR ALERT - a WLD já mostra erros de pagamento
       return false;
     }
   };
@@ -438,7 +458,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const processDemoPurchase = (itemId: string, item: StoreItem): boolean => {
     console.log(`🎮 Demo purchase: ${item.name}`);
     processInventoryUpdate(itemId, item);
-    // NÃO MOSTRAR ALERT - a store/page.tsx já mostra mensagem
     return true;
   };
 
