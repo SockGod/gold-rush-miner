@@ -8,14 +8,15 @@ export default function TabsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black">
-      <div className="pb-24"> {/* AUMENTEI DE 20 PARA 24 */}
+    <div className="flex flex-col h-screen bg-gradient-to-b from-gray-900 to-black">
+      {/* CONTEÚDO COM SCROLL - NUNCA TAPA A TAB */}
+      <div className="flex-1 overflow-y-auto pb-20">
         {children}
       </div>
       
-      {/* NAVIGATION FIXO NO FUNDO - LARGURA TOTAL */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 py-2 z-50">
-        <Navigation /> {/* ⬅️ REMOVI a div com flex justify-center */}
+      {/* TAB FIXA NO FUNDO - SEMPRE VISÍVEL */}
+      <div className="flex-shrink-0 bg-gray-900 border-t border-gray-700 py-2">
+        <Navigation />
       </div>
     </div>
   );
