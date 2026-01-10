@@ -908,10 +908,30 @@ export function MiningGame() {
 
           {!isPlaying ? (
             <div className="flex flex-col items-center w-full">
+              {/* SEGUNDO RETÂNGULO - COM BOTÃO NO TOPO */}
               <div className="w-full p-6 bg-gray-800/50 rounded-2xl border border-gray-700 mb-6">
-                <p className="text-4xl font-bold mb-2 text-yellow-300">{score}</p>
-                <p className="text-gray-300 mb-2">Last Score</p>
+                {/* START MINING BUTTON - AGORA É A PRIMEIRA COISA! */}
+                <button
+                  onClick={startGame}
+                  disabled={extraPlaysCount <= 0 && nextGameTime !== null && nextGameTime > Date.now()}
+                  className={`w-full py-5 rounded-xl font-bold text-xl shadow-lg mb-6 ${
+                    extraPlaysCount <= 0 && nextGameTime !== null && nextGameTime > Date.now()
+                      ? 'bg-gray-700 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800'
+                  }`}
+                >
+                  {extraPlaysCount <= 0 && nextGameTime && nextGameTime > Date.now()
+                    ? `⏳ WAIT ${cooldownTimer}`
+                    : '⛏️ START MINING'}
+                </button>
+
+                {/* LAST SCORE (agora depois do botão) */}
+                <div className="text-center mb-6">
+                  <p className="text-4xl font-bold text-yellow-300">{score}</p>
+                  <p className="text-gray-300">Last Score</p>
+                </div>
                 
+                {/* TODAY'S POINTS + 1500+ GAMES */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="text-center p-3 bg-gray-800/30 rounded-lg">
                     <p className="text-sm text-gray-300">TODAY'S POINTS</p>
@@ -923,7 +943,8 @@ export function MiningGame() {
                   </div>
                 </div>
                 
-                <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
+                {/* EXTRA PLAYS INFO */}
+                <div className="mb-4 p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
                   {extraPlaysCount > 0 ? (
                     <div className="text-center">
                       <p className="text-green-400 font-bold mb-1">
@@ -954,20 +975,7 @@ export function MiningGame() {
                   )}
                 </div>
                 
-                <button
-                  onClick={startGame}
-                  disabled={extraPlaysCount <= 0 && nextGameTime !== null && nextGameTime > Date.now()}
-                  className={`w-full py-5 rounded-xl font-bold text-xl shadow-lg ${
-                    extraPlaysCount <= 0 && nextGameTime !== null && nextGameTime > Date.now()
-                      ? 'bg-gray-700 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800'
-                  }`}
-                >
-                  {extraPlaysCount <= 0 && nextGameTime && nextGameTime > Date.now()
-                    ? `⏳ WAIT ${cooldownTimer}`
-                    : '⛏️ START MINING'}
-                </button>
-                <p className="text-sm text-gray-400 mt-4 text-center">
+                <p className="text-sm text-gray-400 text-center">
                   Power-ups activate automatically when available!
                 </p>
               </div>
@@ -1163,7 +1171,7 @@ export function MiningGame() {
                 </div>
               )}
 
-                                          <div className="relative w-full">
+              <div className="relative w-full">
                 <canvas
                   ref={canvasRef}
                   width={375}
