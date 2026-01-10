@@ -1163,7 +1163,7 @@ export function MiningGame() {
                 </div>
               )}
 
-                            <div className="relative w-full mb-40 pb-10"> {/* ← ADICIONADO: mb-40 pb-10 */}
+                                          <div className="relative w-full">
                 <canvas
                   ref={canvasRef}
                   width={375}
@@ -1193,7 +1193,7 @@ export function MiningGame() {
                 )}
               </div>
 
-              <div className="flex justify-between w-full mt-6 text-sm px-6">
+              <div className="flex justify-between w-full mt-3 text-sm px-6">
                 <div className="flex flex-col items-center">
                   <img src="/game-assets/moeda01.png" className="w-8 h-8 mb-1" alt="Gold" />
                   <span className="text-yellow-400 font-bold">+10</span>
