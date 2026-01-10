@@ -24,3 +24,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* CORREÇÃO PARA OS BOTÕES DA WLD - MOSTRAR TODOS OS 5 */
+.wld-tabs {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-around !important;
+}
+
+.wld-tab-item {
+  flex: 1 !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* GARANTIR QUE TODOS OS ÍCONES SÃO VISÍVEIS */
+.wld-tab-item svg, .wld-tab-item span {
+  display: block !important;
+  visibility: visible !important;
+}
