@@ -838,7 +838,7 @@ export function MiningGame() {
     }
   }, [isPlaying, timeLeft]);
 
-    return (
+  return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       {/* TÍTULO - APENAS ANTES DO JOGO */}
       {!isPlaying && (
@@ -872,6 +872,19 @@ export function MiningGame() {
           >
             Verify World ID
           </button>
+          
+          {/* 🎮 NOVA IMAGEM DE PREVIEW DO JOGO 🎮 */}
+          <div className="w-full mt-4 p-4 bg-gray-800/30 rounded-xl border border-gray-700">
+            <p className="text-center text-gray-300 mb-3">🎮 See what awaits you:</p>
+            <img 
+              src="/game-assets/logo-inicio.png" 
+              alt="Gold Rush Miner Game Preview"
+              className="w-full h-auto rounded-lg border-2 border-yellow-600/50"
+            />
+            <p className="text-center text-sm text-gray-400 mt-3">
+              Mine gold, avoid rocks, find rare diamonds!
+            </p>
+          </div>
         </div>
       ) : (
         <div className="flex flex-col items-center w-full max-w-md">
