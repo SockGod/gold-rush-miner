@@ -840,44 +840,44 @@ export function MiningGame() {
 
   return (
     <div className="flex flex-col items-center p-6 min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
-      {/* TÍTULO PROFISSIONAL - EM AMBAS AS PÁGINAS */}
-      {!isPlaying && (
-        <>
-          <div className="pt-4 pb-6">
-            <div className="flex items-center justify-center relative">
-              
-              {/* PICARETA - Esquerda */}
-              <div className="absolute left-2 md:left-6">
-                <span className="text-4xl text-yellow-500">⛏️</span>
-              </div>
-              
-              {/* TÍTULO PRINCIPAL - Centro REAL */}
-              <div className="text-center">
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                  GOLD RUSH
-                </h1>
-                <p className="text-gray-400 text-sm mt-1 tracking-widest">MINER GAME</p>
-              </div>
-              
-              {/* MOEDA - Direita */}
-              <div className="absolute right-2 md:right-6">
-                <span className="text-3xl text-yellow-500">💰</span>
-              </div>
-              
+          {/* TÍTULO PROFISSIONAL - EM AMBAS AS PÁGINAS */}
+    {!isPlaying && (
+      <>
+        <div className="pt-4 pb-6">
+          <div className="flex items-center justify-center relative">
+            
+            {/* PICARETA - Esquerda (BEM AFASTADA) */}
+            <div className="absolute left-0 md:left-4">
+              <span className="text-4xl text-yellow-500">⛏️</span>
             </div>
+            
+            {/* TÍTULO PRINCIPAL - Com ESPAÇO SEGURO */}
+            <div className="text-center px-10">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                GOLD RUSH
+              </h1>
+              <p className="text-gray-400 text-sm mt-1 tracking-widest">MINER GAME</p>
+            </div>
+            
+            {/* MOEDA - Direita (BEM AFASTADA) */}
+            <div className="absolute right-0 md:right-4">
+              <span className="text-3xl text-yellow-500">💰</span>
+            </div>
+            
           </div>
+        </div>
 
-          {/* BOTÃO SOUND - Compacto */}
-          <div className="flex justify-center mb-3">
-            <button
-              onClick={toggleMute}
-              className={`px-5 py-1.5 rounded-lg flex items-center text-sm ${isMuted ? 'bg-red-700 hover:bg-red-600' : 'bg-green-700 hover:bg-green-600'}`}
-            >
-              {isMuted ? '🔇 Sound OFF' : '🔊 Sound ON'}
-            </button>
-          </div>
-        </>
-      )}
+        {/* BOTÃO SOUND - Compacto */}
+        <div className="flex justify-center mb-3">
+          <button
+            onClick={toggleMute}
+            className={`px-5 py-1.5 rounded-lg flex items-center text-sm ${isMuted ? 'bg-red-700 hover:bg-red-600' : 'bg-green-700 hover:bg-green-600'}`}
+          >
+            {isMuted ? '🔇 Sound OFF' : '🔊 Sound ON'}
+          </button>
+        </div>
+      </>
+    )}
 
       {!isVerified ? (
         <div className="flex flex-col items-center w-full max-w-md p-6 bg-gray-800/50 rounded-2xl border border-gray-700">
